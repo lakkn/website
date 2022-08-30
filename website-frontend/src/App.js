@@ -4,6 +4,8 @@ import { IoLogoLinkedin, IoLogoGithub } from "react-icons/io5";
 import lakshay from './images/lakshay.jpeg';
 import nomic_logo from './images/nomic.png';
 import lambda from './images/lambda.png';
+import deeprun from './images/deeprun.png';
+import Pdf from './Lakshay_Kansal.pdf';
 
 import {
     BrowserRouter as Router,
@@ -21,6 +23,8 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<Home/>}/>
+                    <Route path="/sudoku" element={<Sudoku/>}/>
+                    <Route path="/movie" element={<Movie/>}/>
                 </Routes>
             </Router>
         </div>
@@ -28,6 +32,10 @@ function App() {
 }
 
 function Home() {
+
+    const resume = () => {
+        window.open(Pdf);
+    }
 
     const github = () => {
         window.open('https://github.com/lakkn', '_blank');
@@ -42,11 +50,13 @@ function Home() {
     };
 
     const sudoku = () => {
-        window.location.href = window.location.protocol + "//sudoku." + window.location.host;
+        // window.location.href = window.location.protocol + "//sudoku." + window.location.host;
+        window.location.href = window.location.href + 'sudoku';
     };
 
     const movie = () => {
-        window.location.href = window.location.protocol + "//movie." + window.location.host;
+        // window.location.href = window.location.protocol + "//movie." + window.location.host;
+        window.location.href = window.location.href + 'movie';
     };
 
     const toggle_menu = () => {
@@ -74,6 +84,10 @@ function Home() {
         if(num === 3){
             document.getElementById('h-experience').scrollIntoView({behavior: "smooth"});
         }
+        if(num === 4){
+            document.getElementById('h-education').scrollIntoView({behavior: "smooth"})
+        }
+        toggle_menu();
     };
 
     return (
@@ -84,14 +98,20 @@ function Home() {
                 </div>
                 <div onClick={toggle_menu} className="h-mobile-nav-toggle" id="h-nav-toggle" aria-controls="h-primary-nav" aria-expanded="false"><span></span><span></span><span></span><span></span></div>
                 <div data-visible="false" id="h-primary-nav" className="h-navbar-content">
-                    <div onClick={() => go_to(1)}>
+                    <div style={{'cursor':'pointer'}} onClick={() => go_to(1)}>
                         Projects
                     </div>
-                    <div onClick={() => go_to(2)}>
+                    <div style={{'cursor':'pointer'}} onClick={() => go_to(2)}>
                         Skills
                     </div>
-                    <div onClick={() => go_to(3)}>
+                    <div style={{'cursor':'pointer'}} onClick={() => go_to(3)}>
                         Experience
+                    </div>
+                    <div style={{'cursor':'pointer'}} onClick={() => go_to(4)}>
+                        Education
+                    </div>
+                    <div style={{'cursor':'pointer'}} onClick={resume}>
+                        Résumé
                     </div>
                 </div>
             </div>
@@ -166,14 +186,48 @@ function Home() {
                     <div className="h-experience">
                         <div className="h-experience-header">
                             <div className="h-experience-image-holder"><img alt="" src={nomic_logo} onClick={nomic} className="h-experience-image" /></div>
-                            <p className="h-experience-date">Jun. 2022 - Present</p>
+                            <div className="h-experience-date">Jun. 2022 - Present</div>
                         </div>
                         <div className="h-experience-description">
-                            <p className="h-experience-title">Junior Software Engineer</p>
+                            <div className="h-experience-title">Junior Software Engineer</div>
+                            <div className="h-experience-content">- Utilized React.JS and Python to develop an interactive frontend for Nomic's Atlas Maps to give users a better understanding of their data.</div>
+                            <div className="h-experience-content">- Constructed Nomic News, a platform that scrapes various news sources from pro-western and pro-russian sources and simplistically displays it to see the difference in the point-of-views of russian and western propaganda.</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="h-education" className='h-section'>
+                    <p className="h-section-head noselect"><strong>education</strong></p>
+                    <div className="h-experience">
+                        <div className="h-experience-header">
+                            <div className="h-experience-image-holder"><img alt="" src={deeprun} className="h-experience-image" /></div>
+                            <div className="h-experience-date">Sep. 2019 - Present</div>
+                        </div>
+                        <div className="h-experience-description" style={{'justifyContent': 'center'}}>
+                            <div className="h-experience-title" style={{'maxWidth': '300px'}}>Center for Information Technology @ Deep Run High School</div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    )
+}
+
+function Sudoku() {
+    return (
+        <div style={{'margin': '30px'}}>
+            <div><a href={window.location.protocol + "//" + window.location.host}>go back</a></div>
+            <div>full demo coming soon</div>
+            <div>github repository: <a href="https://github.com/lakkn/sudoku-solver" target="_blank" rel="noreferrer">https://github.com/lakkn/sudoku-solver</a></div>
+        </div>
+    )
+}
+
+function Movie() {
+    return (
+        <div style={{'margin': '30px'}}>
+            <div><a href={window.location.protocol + "//" + window.location.host}>go back</a></div>
+            <div>full demo coming soon</div>
+            <div>github repository: <a href="https://github.com/lakkn/movie-recommender" target="_blank" rel="noreferrer">https://github.com/lakkn/movie-recommender</a></div>
         </div>
     )
 }
