@@ -1,9 +1,10 @@
 import React from 'react';
 import './App.css';
 import { IoLogoLinkedin, IoLogoGithub } from "react-icons/io5";
+import { SiPython, SiReact, SiHtml5, SiJava, SiGit, SiAmazonaws } from "react-icons/si";
 import lakshay from './images/lakshay.jpeg';
 import nomic_logo from './images/nomic.png';
-import lambda from './images/lambda.png';
+import lambda from './images/lambda.svg';
 import deeprun from './images/deeprun.png';
 import Pdf from './Lakshay_Kansal.pdf';
 
@@ -94,7 +95,7 @@ function Home() {
         <div className="h-whole">
             <div className="h-navbar">
                 <div className="h-navbar-logo">
-                    <img className="h-navbar-image" alt="" src={ lambda } />
+                    <img style={{"filter":"invert(88%) sepia(6%) saturate(78%) hue-rotate(87deg) brightness(93%) contrast(85%)"}} className="h-navbar-image" alt="" src={ lambda } />
                 </div>
                 <div onClick={toggle_menu} className="h-mobile-nav-toggle" id="h-nav-toggle" aria-controls="h-primary-nav" aria-expanded="false"><span></span><span></span><span></span><span></span></div>
                 <div data-visible="false" id="h-primary-nav" className="h-navbar-content">
@@ -119,7 +120,16 @@ function Home() {
                 <div className="h-start-container">
                     <div className="h-start">
                         <p className="h-start-text noselect"><i>hello, i'm</i></p>
-                        <p className="h-start-head noselect"><strong>LAKSHAY KANSAL</strong></p>
+                        <p className="h-start-head noselect" style={{'color':'#B5BD68'}}><strong>LAKSHAY KANSAL</strong></p>
+                        <div className="h-subtitles">
+                            <div className="h-static-txt">A</div>
+                            <ul className="h-dynamic-txts">
+                                <li><span>Student</span></li>
+                                <li><span>Programmer</span></li>
+                                <li><span>Developer</span></li>
+                                <li><span>Human</span></li>
+                            </ul>
+                        </div>
                         <div className="h-contact-logos">
                             <IoLogoGithub onClick={github} className="h-contact-logo" />
                             <IoLogoLinkedin onClick={linkedin} className="h-contact-logo" />
@@ -130,80 +140,67 @@ function Home() {
                     </div>
                 </div>
                 <div id="h-projects" className="h-section">
-                    <p className="h-section-head noselect"><strong>my projects</strong></p>
+                    <p className="h-section-head noselect"><strong>Projects</strong></p>
                     <div className="h-project-holder noselect">
                         <button onClick={sudoku} className="h-project-card"><p className="h-project-card-text">sudoku solver</p></button>
                         <button onClick={movie} className="h-project-card"><p className="h-project-card-text">movie recommender</p></button>
                     </div>
                 </div>
                 <div id="h-skills" className="h-section">
-                    <p className="h-section-head noselect"><strong>my skills</strong></p>
+                    <p className="h-section-head noselect"><strong>Skills</strong></p>
                     <div className="h-skills-holder">
-                        <div className="h-skill">
-                            <div className="h-skill-text">
-                                <strong>Python</strong>
-                            </div>
-                            <div className="h-skill-bar">
-                                <div className="h-skill-bar-color python-bar"></div>
-                            </div>
+                        <div className="h-skill-card">
+                            <SiPython style={{'color':'#F0C674','width': '50px', 'height': '50px'}}/>
+                            Python
                         </div>
-                        <div className="h-skill">
-                            <div className="h-skill-text">
-                                <strong>HTML CSS</strong>
-                            </div>
-                            <div className="h-skill-bar">
-                                <div className="h-skill-bar-color html-bar"></div>
-                            </div>
+                        <div className="h-skill-card">
+                            <SiReact style={{'color':'#8ABEB7','width': '50px', 'height': '50px'}}/>
+                            React.JS
                         </div>
-                        <div className="h-skill">
-                            <div className="h-skill-text">
-                                <strong>Java</strong>
-                            </div>
-                            <div className="h-skill-bar">
-                                <div className="h-skill-bar-color java-bar"></div>
-                            </div>
+                        <div className="h-skill-card">
+                            <SiHtml5 style={{'color':'#CC6666','width': '50px', 'height': '50px'}}/>
+                            HTML/CSS
                         </div>
-                        <div className="h-skill">
-                            <div className="h-skill-text">
-                                <strong>React.JS</strong>
-                            </div>
-                            <div className="h-skill-bar">
-                                <div className="h-skill-bar-color react-bar"></div>
-                            </div>
+                        <div className="h-skill-card">
+                            <SiJava style={{'color':'#81A2BE','width': '50px', 'height': '50px'}}/>
+                            Java
                         </div>
-                        <div className="h-skill">
-                            <div className="h-skill-text">
-                                <strong>Git</strong>
-                            </div>
-                            <div className="h-skill-bar">
-                                <div className="h-skill-bar-color git-bar"></div>
-                            </div>
+                        <div className="h-skill-card">
+                            <SiGit style={{'color':'#DE935F','width': '50px', 'height': '50px'}}/>
+                            Git
+                        </div>
+                        <div className="h-skill-card">
+                            <SiAmazonaws style={{'color':'#F0C674','width': '50px', 'height': '50px'}}/>
+                            AWS
                         </div>
                     </div>
                 </div>
                 <div id="h-experience" className='h-section'>
-                    <p className="h-section-head noselect"><strong>experience</strong></p>
-                    <div className="h-experience">
-                        <div className="h-experience-header">
-                            <div className="h-experience-image-holder"><img alt="" src={nomic_logo} onClick={nomic} className="h-experience-image" /></div>
-                            <div className="h-experience-date">Jun. 2022 - Present</div>
-                        </div>
-                        <div className="h-experience-description">
-                            <div className="h-experience-title">Junior Software Engineer</div>
-                            <div className="h-experience-content">- Utilized React.JS and Python to develop an interactive frontend for Nomic's Atlas Maps to give users a better understanding of their data.</div>
-                            <div className="h-experience-content">- Constructed Nomic News, a platform that scrapes various news sources from pro-western and pro-russian sources and simplistically displays it to see the difference in the point-of-views of russian and western propaganda.</div>
+                    <p className="h-section-head noselect"><strong>Experience</strong></p>
+                    <div className="h-experience-holder">
+                        <div className="h-experience">
+                            <div className="h-experience-header" onClick={nomic} style={{'background': '#ffffff'}}>
+                                <div className="h-experience-image-holder"><img alt="" src={nomic_logo} className="h-experience-image" /></div>
+                            </div>
+                            <div className="h-experience-description">
+                                <div className="h-experience-title" style={{'color': '#CC6666'}}>Junior Software Engineer</div>
+                                <div className="h-experience-content">- Utilized React.JS and Python to develop an interactive frontend for Nomic's Atlas Maps to give users a better understanding of their data.</div>
+                                <div className="h-experience-title" style={{'color': "#DE935F"}}>Intern</div>
+                                <div className="h-experience-content">- Constructed Nomic News, a platform that scrapes various news sources from pro-western and pro-russian sources and simplistically displays it to see the difference in the point-of-views of russian and western propaganda.</div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div id="h-education" className='h-section'>
-                    <p className="h-section-head noselect"><strong>education</strong></p>
-                    <div className="h-experience">
-                        <div className="h-experience-header">
-                            <div className="h-experience-image-holder"><img alt="" src={deeprun} className="h-experience-image" /></div>
-                            <div className="h-experience-date">Sep. 2019 - Present</div>
-                        </div>
-                        <div className="h-experience-description" style={{'justifyContent': 'center'}}>
-                            <div className="h-experience-title" style={{'maxWidth': '300px'}}>Center for Information Technology @ Deep Run High School</div>
+                    <p className="h-section-head noselect"><strong>Education</strong></p>
+                    <div className="h-experience-holder">
+                        <div className="h-experience">
+                            <div className="h-experience-header" style={{'background': '#ffffff'}}>
+                                <div className="h-experience-image-holder"><img alt="" src={deeprun} className="h-experience-image" /></div>
+                            </div>
+                            <div className="h-experience-description" style={{'justifyContent': 'center'}}>
+                                <div className="h-experience-title" style={{'max-width': '360px', 'color': '#B5BD68'}}>Center for Information Technology @ Deep Run High School</div>
+                            </div>
                         </div>
                     </div>
                 </div>

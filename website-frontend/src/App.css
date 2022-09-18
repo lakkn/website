@@ -1,5 +1,11 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+}
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -23,12 +29,14 @@
 body{
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
+    background: #1D1F21;
+    color: #C5C8C6;
 }
 
 .h-whole{
     display: flex;
     flex-direction: column;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'poppins', sans-serif;
 }
 
 @media (max-width: 35em){
@@ -40,8 +48,8 @@ body{
         position: fixed;
         opacity: 95%;
         inset: 0 0 0 20%;
-        background: #84a98c;
-        color: #cad2c5;
+        background: #C5C8C6;
+        color: #373B41;
         padding-top: 100px;
         padding-left: 45px;
         flex-direction: column;
@@ -56,7 +64,7 @@ body{
         position: absolute;
         aspect-ratio: 1;
         width: 3rem;
-        color: #111111;
+        color: #C5C8C6;
         top: 20px;
         right: 20px;
         z-index: 100;
@@ -78,7 +86,7 @@ body{
         position: absolute;
         height: 7px;
         width: 80%;
-        background: #111111;
+        background: #C5C8C6;
         border-radius: 9px;
         opacity: 1;
         left: 0;
@@ -131,7 +139,7 @@ body{
     }
 
     .h-mobile-nav-toggle.open span{
-        background: #cad2c5;
+        background: #373B41;
     }
 }
 
@@ -201,9 +209,66 @@ body{
     font-family: 'Roboto', sans-serif;
 }
 
+.h-subtitles{
+    display: flex;
+    margin-left: 40px;
+    font-family: "Source Code Pro", monospaced;
+}
+
+.h-subtitles .h-static-txt{
+    font-size: 40px;
+}
+
+.h-subtitles .h-dynamic-txts{
+    margin-left: 15px;
+    line-height: 53px;
+    height: 53px;
+    overflow: hidden;
+}
+
+.h-dynamic-txts li{
+    list-style: none;
+    color: #F0C674;
+    font-size: 40px;
+    top: 0;
+    position: relative;
+    animation: slide 12s steps(4) infinite;
+}
+
+@keyframes slide{
+    100%{
+        top: -212px;
+    }
+}
+
+.h-dynamic-txts li{
+    position: relative;
+}
+
+.h-dynamic-txts li::after{
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: #1D1F21;
+    border-left: 5px solid #F0C674;
+    left: 0;
+    animation: typing 3s steps(10) infinite;
+}
+
+@keyframes typing{
+    40%,60%{
+        left: calc(100%);
+    }
+    100%{
+        left: 0;
+    }
+}
+
 .h-contact-logos{
     display: flex;
     justify-content: center;
+    margin-top: 20px;
     gap: 15px;
 }
 
@@ -230,17 +295,37 @@ body{
     border-radius: 50%;
 }
 
+#h-projects{
+    background: #282A2E;
+}
+
+#h-skills{
+    background: #373B41;
+}
+
+#h-experience{
+    background: #282A2E;
+}
+
+#h-education{
+    background: #1D1F21;
+}
+
+#h-contact{
+    background: #282A2E;
+}
+
 .h-section{
     display: flex;
     flex-direction: column;
-    padding-bottom: 100px;
     width: 100%;
+    padding-top: 100px;
+    padding-bottom: 100px;
 }
 
 .h-section-head{
     text-align: center;
     font-size: 40px;
-    font-family: 'Roboto', sans-serif;
 }
 
 .h-project-holder{
@@ -258,109 +343,64 @@ body{
     width: 270px;
     height: 125px;
     border: none;
-    color: white;
-    background-color: #354f52;
+    color: #C5C8C6;
+    background-color: #5F819D;
     border-radius: 10px;
     transition: ease-out 300ms;
-    font-size: 25px;box-shadow: inset 0 0 0 0 #547D81;
+    font-size: 25px;box-shadow: inset 0 0 0 0 #81A2BE;
     outline: none;
 }
 
 .h-project-card:hover{
-    box-shadow: inset 270px 0 0 0.09px #547D81;
+    box-shadow: inset 270px 0 0 0.09px #81A2BE;
+    color: #282A2E;
     cursor: pointer;
 }
 
 .h-skills-holder{
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    margin-top: 50px;
     justify-content: center;
-    gap: 15px;
+    gap: 50px;
     transition: 500ms;
 }
 
-.h-skill{
+.h-skill-card{
+    width: 300px;
+    height: 150px;
+    background: #1D1F21;
+    border-radius: 10px;
+    font-size: 35px;
     display: flex;
-    flex-direction: column;
-    padding-left: 15%;
-    padding-right: 15%;
-    gap: 15px;
+    align-items: center;
+    padding-left: 40px;
+    gap: 30px;
 }
 
-.h-skill-text{
-    font-size: 15px;
-    margin-bottom: 0;
-}
-
-.h-skill-bar{
-    margin-top: 0;
-    width: 100%;
-    background-color: #DDDDDD;
-    height: 20px;
-    border-radius: 20px;
-}
-
-.h-skill-bar-color{
-    height: 100%;
-    border-radius: 20px;
-    transition: 500ms ease-in;
-}
-
-.python-bar{
-    background-color: #3B5750;
-    height: 100%;
-    width: 0;
-}
-
-.h-skills-holder:hover .python-bar{
-    width: 90%;
-}
-
-.html-bar{
-    background-color: #476860;
-    height: 100%;
-    width: 0;
-}
-
-.h-skills-holder:hover .html-bar{
-    width: 80%;
-}
-
-.java-bar{
-    background-color: #52796F;
-    height: 100%;
-    width: 0;
-}
-
-.h-skills-holder:hover .java-bar{
-    width: 80%;
-}
-
-.react-bar{
-    background-color: #649388;
-    height: 100%;
-    width: 0;
-}
-
-.h-skills-holder:hover .react-bar{
-    width: 70%;
-}
-
-.git-bar{
-    background-color: #7DA69C;
-    height: 100%;
-    width: 0;
-}
-
-.h-skills-holder:hover .git-bar{
-    width: 55%;
-}
-
-.h-experience{
+.h-experience-holder{
     display: flex;
     justify-content: center;
     gap: 30px;
     flex-wrap: wrap;
+    margin-top: 50px;
+    margin-left: 25px;
+}
+
+.h-experience{
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (min-width: 500px) {
+  .h-experience {
+    min-width: 522px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .h-experience {
+    min-width: 90vw;
+  }
 }
 
 .h-experience-header{
@@ -368,7 +408,11 @@ body{
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    cursor: pointer;
     gap: 10px;
+    width: 200px;
+    height: 125px;
+    border-radius: 15px;
 }
 
 .h-experience-image-holder{
@@ -396,13 +440,28 @@ body{
     display: flex;
     flex-direction: column;
     max-width: 500px;
-    margin-left: 20px;
+    margin-top: 20px;
+    padding-left: 20px;
+    border-left: 2px solid #C5C8C6;
+}
+
+.h-experience-title::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #282A2E;
+  border-radius: 999px;
+  left: -29px;
+  top: 7px;
+  border: 3px solid #C5C8C6;
 }
 
 .h-experience-title{
     font-size: 20px;
     margin-bottom: 15px;
     font-weight: bold;
+    position: relative;
 }
 
 .h-experience-content{
