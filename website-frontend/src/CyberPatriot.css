@@ -1,0 +1,176 @@
+.cp-all{
+  background: #FBFBFB;
+  transition: 500ms;
+  min-height: 100vh;
+}
+
+.cp-all-dark{
+  background: #141414;
+}
+
+.cp-navbar{
+  width: 100%;
+  height: 80px;
+  background: #F2F2F2;
+  color: #373737;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  transition: 500ms;
+}
+
+.cp-navbar-dark{
+  background: #222222;
+  color: #E4E3E2;
+}
+
+.cp-navbar-heading{
+  margin-left: 30px;
+  font-size: 25px;
+}
+
+.cp-color-mode{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 40px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.cp-add{
+  margin-right: 40px;
+}
+
+.cp-add-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  background: #80AE35;
+  color: #F2F2F2;
+  width: 50px;
+  border-radius: 0px 7px 7px 0px;
+  cursor: pointer;
+  transition: 500ms;
+}
+
+.cp-add-button-dark{
+  background: #94CE9C;
+  color: #222222;
+}
+
+.cp-add-button:hover{
+  background: #42581A;
+  font-size: 35px;
+}
+
+.cp-add-button-dark:hover{
+  background: #C0DDC5;
+}
+
+.cp-add-input{
+  outline: none;
+  border: none;
+  padding: 15px;
+  width: 80px;
+  font-size: 20px;
+  border-radius: 7px 0px 0px 7px;
+}
+
+.cp-refresh{
+  border-radius: 7px;
+  display: flex;
+  margin-right: 40px;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  font-size: 27px;
+  height: 50px;
+  width: 50px;
+  color: #F2F2F2;
+  cursor: pointer;
+  background: #1E63B8;
+  transition: 500ms;
+  padding-bottom: 3px;
+}
+
+.cp-refresh-dark{
+  background: #67A9ED;
+  color: #222222;
+}
+
+.cp-refresh-icon{
+  margin-top: 5px;
+  transition: 500ms;
+  color: #F2F2F2;
+}
+
+.cp-refresh-icon-dark{
+  color: #222222;
+}
+
+.cp-refresh:hover{
+  background: #013D63;
+}
+
+.cp-refresh-dark:hover{
+  background: #8AB6E9;
+}
+
+.cp-refresh:hover .cp-refresh-icon{
+  font-size: 35px;
+  transform: rotate(360deg);
+}
+
+.cp-holder{
+  margin-top: 90px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 90px;
+  padding-bottom: 90px;
+}
+
+.cp-card{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #F2F2F2;
+  color: #373737;
+  border-radius: 15px;
+  padding: 30px;
+  width: 400px;
+  transition: 500ms;
+}
+
+.cp-card-dark{
+  background: #222222;
+  color: #E4E3E2;
+}
+
+.cp-team-number{
+  font-size: 25px;
+}
+
+.cp-team-classifiers{
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.cp-score-text{
+  font-size: 18px;
+}
+
+.cp-sub-holder{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.cp-sub-title{
+  margin-top: 10px;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
