@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import './CyberPatriot.css';
 import { IoLogoLinkedin, IoLogoGithub } from "react-icons/io5";
 import { SiPython, SiReact, SiHtml5, SiJava, SiGit, SiAmazonaws } from "react-icons/si";
+import { HiPlus } from "react-icons/hi";
+import { MdRefresh, MdLightMode } from "react-icons/md";
 import lakshay from './images/lakshay.jpeg';
 import nomic_logo from './images/nomic.png';
 import lambda from './images/lambda.svg';
@@ -18,6 +21,10 @@ import {
     useLocation,
 } from "react-router-dom";
 
+// path config for api
+// const api_base_path = process.env.REACT_APP_API_BASE_PATH || 'http://localhost'
+const api_base_path = 'http://localhost:80'
+
 function App() {
     return (
         <div className="App">
@@ -26,6 +33,8 @@ function App() {
                     <Route path="/" element={<Home/>}/>
                     <Route path="/sudoku" element={<Sudoku/>}/>
                     <Route path="/movie" element={<Movie/>}/>
+                    <Route path="/cyberpatriot" element={<CyberPatriot/>}/>
+                    <Route path="/cyberpatriot/:teams" element={<CyberPatriot/>}/>
                 </Routes>
             </Router>
         </div>
@@ -225,6 +234,156 @@ function Movie() {
             <div><a href={window.location.protocol + "//" + window.location.host}>go back</a></div>
             <div>full demo coming soon</div>
             <div>github repository: <a href="https://github.com/lakkn/movie-recommender" target="_blank" rel="noreferrer">https://github.com/lakkn/movie-recommender</a></div>
+        </div>
+    )
+}
+
+function CyberPatriot() {
+
+    const [teams, setTeams] = useState([]);
+    const [teamData, setTeamData] = useState([]);
+    const [urlLoaded, setUrlLoaded] = useState(0);
+    const [newTeam, setNewTeam] = useState("");
+
+    useEffect(() => {
+        var windows_raw = window.location.href.split('/');
+        var teams_raw = windows_raw[windows_raw.length - 1];
+        if(teams_raw != "cyberpatriot" && urlLoaded < 10){
+            var teams_link = teams_raw.split("-");
+            let link_check = true;
+            for(var i = 0; i < teams_link.length; i++){
+                var current_team = teams_link[i];
+                if(current_team.length != 4){
+                    link_check = false;
+                }
+            }
+            if(link_check){
+                setTeams(teams_link);
+                get_team_data();
+            }else{
+
+            }
+            setUrlLoaded(urlLoaded + 1);
+        }
+    });
+
+    const handle_change = (event) => {
+        setNewTeam(event.target.value);
+    }
+
+    const load_data = () => {
+        var windows_raw = window.location.href.split('/');
+        var teams_raw = windows_raw[windows_raw.length - 1];
+        if(teams_raw != "cyberpatriot"){
+            var teams_link = teams_raw.split("-");
+            let link_check = true;
+            for(var i = 0; i < teams_link.length; i++){
+                var current_team = teams_link[i];
+                if(current_team.length != 4){
+                    link_check = false;
+                }
+            }
+            if(link_check){
+                setTeams(teams_link);
+                get_team_data();
+            }
+        }
+    };
+
+    const add_team = () => {
+        if(newTeam.length == 4){
+            var teams_holder = teams;
+            teams_holder.push(newTeam);
+            setTeams(teams_holder);
+            var current_url = window.location.href;
+            if(current_url.split('/')[current_url.split('/').length-1] == 'cyberpatriot'){
+                window.history.pushState("", "", "cyberpatriot/"+newTeam);
+            }else if(current_url.split('/')[current_url.split('/').length-1] == ''){
+                window.history.pushState("","", newTeam);
+            }else{
+                window.history.pushState("", "", current_url.split('/')[current_url.split('/').length-1]+"-"+newTeam);
+            }
+            get_team_data();
+        }
+    }
+
+    const get_team_data = () => {
+        var promise = fetch(api_base_path + '/locate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                teams: teams,
+            })
+        });
+        console.log(promise);
+        promise.then((response) => response.json())
+        .then((response) => setTeamData(response['team_data']))
+    };
+
+    const toggle_color = () => {
+        var cards = document.getElementsByClassName("cp-card");
+        for(var i = 0; i < cards.length; i++){
+            cards[i].classList.toggle("cp-card-dark");
+        }
+        document.getElementsByClassName("cp-navbar")[0].classList.toggle('cp-navbar-dark');
+        document.getElementsByClassName("cp-all")[0].classList.toggle('cp-all-dark');
+        document.getElementsByClassName("cp-add-button")[0].classList.toggle('cp-add-button-dark');
+        document.getElementsByClassName("cp-refresh")[0].classList.toggle('cp-refresh-dark');
+        document.getElementsByClassName("cp-refresh-icon")[0].classList.toggle('cp-refresh-icon-dark');
+
+    }
+
+    return (
+        <div className="cp-all">
+            <div className="cp-navbar">
+                <div>
+                    <div className="cp-navbar-heading"><strong>CyberTracker</strong></div>
+                </div>
+                <div style={{'display': 'flex'}}>
+                    <div style={{'display': 'flex'}} className="cp-add">
+                        <input value={newTeam} placeholder="1767" onChange={handle_change} className="cp-add-input"/>
+                        <div onClick={add_team} className="cp-add-button"><HiPlus/></div>
+                    </div>
+                    <div className="cp-refresh" onClick={load_data}><MdRefresh className="cp-refresh-icon"/></div>
+                    <div className="cp-color-mode" onClick={toggle_color}><MdLightMode/></div>
+                </div>
+            </div>
+            <div className="cp-holder">
+            {teamData.map((team) => (
+                <div className="cp-card">
+                    <div className="cp-team-number"><strong>Team {team['TeamNumber']}</strong></div>
+                    <div className="cp-team-classifiers">{team['Division']} | {team['Tier']} | {team['State']}</div>
+                    <hr/>
+                    <div className="cp-score-text">Image Score: {team['ImageScore']}</div>
+                    {team['CiscoScore'] &&
+                        <div className="cp-score-text">Cisco Score: {team['CiscoScore']}</div>
+                    }
+                    <div className="cp-score-text">Total Score: {team['TotalScore']}</div>
+                    <hr/>
+                    <div className="cp-sub-holder">
+                        <div>
+                            <div className="cp-sub-title"><strong>Rank</strong></div>
+                            <div>{team['Place']} place</div>
+                            <div>{team['Percentile']} percentile</div>
+                        </div>
+                        <div>
+                            <div className="cp-sub-title"><strong>Margin</strong></div>
+                            <div>{team['PointsBelowFirst']} points below 1st place</div>
+                            <div>{team['PointsBelow']} points below {team['Place'] - 1} place</div>
+                            <div>{team['PointsAbove']} points above {team['Place'] + 1} place</div>
+                        </div>
+                        <div>
+                            <div className="cp-sub-title"><strong>Standing</strong></div>
+                            <div>{team['StateRank']} of {team['TotalTeamsState']} peer teams in state</div>
+                            <div>{team['TierRank']} of {team['TotalTeamsTier']} peer teams in tier</div>
+                            <div>{team['DivisionRank']} of {team['TotalTeamsDivision']} peer teams in division</div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+            </div>
         </div>
     )
 }
