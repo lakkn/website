@@ -5,8 +5,9 @@ services:
     image: website-backend
     container_name: website-backend
     ports:
-      - "8000:8000"
+      - "80:80"
     environment:
       - APP_ENVIRONMENT=dev
     volumes:
       - './website-backend/app:/app'
+    command: ["/start-reload.sh"]

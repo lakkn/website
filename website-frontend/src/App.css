@@ -362,6 +362,7 @@ body{
     flex-wrap: wrap;
     margin-top: 50px;
     justify-content: center;
+    max-width: 1500px;
     gap: 50px;
     transition: 500ms;
 }

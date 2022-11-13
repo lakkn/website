@@ -2,3 +2,6 @@ uvicorn
 fastapi
 pandas
 pydantic
+requests
+bs4
+lxml
