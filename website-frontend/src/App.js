@@ -10,6 +10,9 @@ import nomic_logo from './images/nomic.png';
 import lambda from './images/lambda.svg';
 import deeprun from './images/deeprun.png';
 import Pdf from './Lakshay_Kansal.pdf';
+import LoadingOverlay from 'react-loading-overlay-ts';
+import PropagateLoader from 'react-spinners/PropagateLoader';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 import {
     BrowserRouter as Router,
@@ -23,7 +26,8 @@ import {
 
 // path config for api
 // const api_base_path = process.env.REACT_APP_API_BASE_PATH || 'http://localhost'
-const api_base_path = 'http://localhost:80'
+const api_base_path = 'https://0tc8svpio2.execute-api.us-east-1.amazonaws.com/default'
+//const api_base_path = 'http://localhost:80'
 
 function App() {
     return (
@@ -68,6 +72,10 @@ function Home() {
         // window.location.href = window.location.protocol + "//movie." + window.location.host;
         window.location.href = window.location.href + 'movie';
     };
+
+    const cyberpatriot = () => {
+        window.location.href = window.location.href + 'cyberpatriot';
+    }
 
     const toggle_menu = () => {
         const nav_content = document.querySelector(".h-navbar-content");
@@ -151,6 +159,7 @@ function Home() {
                 <div id="h-projects" className="h-section">
                     <p className="h-section-head noselect"><strong>Projects</strong></p>
                     <div className="h-project-holder noselect">
+                        <button onClick={cyberpatriot} className="h-project-card"><p className="h-project-card-text">cyberpatriot tracker</p></button>
                         <button onClick={sudoku} className="h-project-card"><p className="h-project-card-text">sudoku solver</p></button>
                         <button onClick={movie} className="h-project-card"><p className="h-project-card-text">movie recommender</p></button>
                     </div>
@@ -192,9 +201,9 @@ function Home() {
                                 <div className="h-experience-image-holder"><img alt="" src={nomic_logo} className="h-experience-image" /></div>
                             </div>
                             <div className="h-experience-description">
-                                <div className="h-experience-title" style={{'color': '#CC6666'}}>Junior Software Engineer</div>
+                                <div className="h-experience-title" style={{'color': '#81A2BE'}}>Junior Software Engineer</div>
                                 <div className="h-experience-content">- Utilized React.JS and Python to develop an interactive frontend for Nomic's Atlas Maps to give users a better understanding of their data.</div>
-                                <div className="h-experience-title" style={{'color': "#DE935F"}}>Intern</div>
+                                <div className="h-experience-title" style={{'color': "#81A2BE"}}>Intern</div>
                                 <div className="h-experience-content">- Constructed Nomic News, a platform that scrapes various news sources from pro-western and pro-russian sources and simplistically displays it to see the difference in the point-of-views of russian and western propaganda.</div>
                             </div>
                         </div>
@@ -208,7 +217,7 @@ function Home() {
                                 <div className="h-experience-image-holder"><img alt="" src={deeprun} className="h-experience-image" /></div>
                             </div>
                             <div className="h-experience-description" style={{'justifyContent': 'center'}}>
-                                <div className="h-experience-title" style={{'max-width': '360px', 'color': '#B5BD68'}}>Center for Information Technology @ Deep Run High School</div>
+                                <div className="h-experience-title" style={{'max-width': '360px', 'color': '#81A2BE'}}>Center for Information Technology at Deep Run High School</div>
                             </div>
                         </div>
                     </div>
@@ -244,6 +253,7 @@ function CyberPatriot() {
     const [teamData, setTeamData] = useState([]);
     const [urlLoaded, setUrlLoaded] = useState(0);
     const [newTeam, setNewTeam] = useState("");
+    const [currentDisplay, toggleDisplay] = useState('card');
 
     useEffect(() => {
         var windows_raw = window.location.href.split('/');
@@ -271,6 +281,18 @@ function CyberPatriot() {
         setNewTeam(event.target.value);
     }
 
+    const change_display = () => {
+        if(currentDisplay == "card"){
+            toggleDisplay("grid");
+        }else{
+            toggleDisplay("card");
+        }
+    }
+
+    const go_to_team = (team_num) => {
+        window.open('http://scoreboard.uscyberpatriot.org/team.php?team='+team_num, '_blank');
+    }
+
     const load_data = () => {
         var windows_raw = window.location.href.split('/');
         var teams_raw = windows_raw[windows_raw.length - 1];
@@ -285,6 +307,7 @@ function CyberPatriot() {
             }
             if(link_check){
                 setTeams(teams_link);
+                console.log('get team');
                 get_team_data();
             }
         }
@@ -293,22 +316,67 @@ function CyberPatriot() {
     const add_team = () => {
         if(newTeam.length == 4){
             var teams_holder = teams;
-            teams_holder.push(newTeam);
-            setTeams(teams_holder);
-            var current_url = window.location.href;
-            if(current_url.split('/')[current_url.split('/').length-1] == 'cyberpatriot'){
-                window.history.pushState("", "", "cyberpatriot/"+newTeam);
-            }else if(current_url.split('/')[current_url.split('/').length-1] == ''){
-                window.history.pushState("","", newTeam);
+            if(teams_holder.indexOf(newTeam) !== -1){
+                alert('team already exists');
             }else{
-                window.history.pushState("", "", current_url.split('/')[current_url.split('/').length-1]+"-"+newTeam);
+                teams_holder.push(newTeam);
+                setTeams(teams_holder);
+                var current_url = window.location.href;
+                if(current_url.split('/')[current_url.split('/').length-1] == 'cyberpatriot'){
+                    window.history.pushState("", "", "cyberpatriot/"+newTeam);
+                }else if(current_url.split('/')[current_url.split('/').length-1] == ''){
+                    window.history.pushState("","", newTeam);
+                }else{
+                    window.history.pushState("", "", current_url.split('/')[current_url.split('/').length-1]+"-"+newTeam);
+                }
+                get_team_data();
             }
-            get_team_data();
+        }else{
+            alert('team length is greater than 4');
         }
     }
 
+    const delete_team = (team) => {
+        var tnum = team.substring(3);
+        var teams_holder = teams;
+        //teams_holder.pop(teams_holder.indexOf(tnum)-1);
+        teams_holder = teams_holder.filter(function(item) {
+            return item !== tnum
+        })
+        var teams_data = teamData;
+        teams_data = teams_data.filter(function(item) {
+            return item['TeamNumber'] != team
+        })
+        setTeamData(teams_data);
+        setTeams(teams_holder);
+        var current_url = window.location.href;
+        if(teams_holder.length > 0){
+            if(current_url.split('/')[current_url.split('/').length-1] == 'cyberpatriot'){
+                //do nothing
+            }else if(current_url.split('/')[current_url.split('/').length-1] == ''){
+                //do nothing
+            }else{
+                window.history.pushState("", "", teams_holder.join("-"));
+            }
+        }else{
+            setTeamData([]);
+            window.history.pushState("", "", "");
+        }
+    }
+
+    const [alertMessage, setAlertMessage] = useState('');
+    const alert = (message) => {
+        setAlertMessage(message);
+        var alerter = document.getElementById("cp-alert");
+
+        alerter.className = "cp-show";
+
+        setTimeout(function(){ alerter.className = alerter.className.replace('cp-show',""); }, 3000);
+    }
+
     const get_team_data = () => {
-        var promise = fetch(api_base_path + '/locate', {
+        setIsActive(true);
+        var promise = fetch(api_base_path + '/cyberpatriot-read', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -317,73 +385,183 @@ function CyberPatriot() {
                 teams: teams,
             })
         });
-        console.log(promise);
+
         promise.then((response) => response.json())
-        .then((response) => setTeamData(response['team_data']))
+        .then((response) => setTeamData(response['teams'])).then((response) => setIsActive(false))
     };
 
+
+    const [cardClass, setCardClass] = useState('cp-card');
     const toggle_color = () => {
-        var cards = document.getElementsByClassName("cp-card");
-        for(var i = 0; i < cards.length; i++){
-            cards[i].classList.toggle("cp-card-dark");
-        }
         document.getElementsByClassName("cp-navbar")[0].classList.toggle('cp-navbar-dark');
         document.getElementsByClassName("cp-all")[0].classList.toggle('cp-all-dark');
         document.getElementsByClassName("cp-add-button")[0].classList.toggle('cp-add-button-dark');
         document.getElementsByClassName("cp-refresh")[0].classList.toggle('cp-refresh-dark');
         document.getElementsByClassName("cp-refresh-icon")[0].classList.toggle('cp-refresh-icon-dark');
-
+        if(cardClass == 'cp-card'){
+            setCardClass('cp-card cp-card-dark');
+        }else{
+            setCardClass('cp-card');
+        }
     }
+
+    const [isActive, setIsActive] = useState(false);
 
     return (
         <div className="cp-all">
+            <LoadingOverlay
+                active={isActive}
+                text='Gathering Team Data'
+                spinner={<PropagateLoader color="#ffffff"/>}
+                styles={{
+                    wrapper:{},
+                    overlay: (base) => ({
+                        ...base,
+                        background: 'rgba(0, 10, 15, 0.9)'
+                    }),
+                    content: (base) => ({
+                        ...base,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: "30px",
+                        alignItems:"center",
+
+                    })
+            }}>
+            </LoadingOverlay>
+            <div id="cp-alert">{alertMessage}</div>
             <div className="cp-navbar">
                 <div>
                     <div className="cp-navbar-heading"><strong>CyberTracker</strong></div>
                 </div>
                 <div style={{'display': 'flex'}}>
                     <div style={{'display': 'flex'}} className="cp-add">
-                        <input value={newTeam} placeholder="1767" onChange={handle_change} className="cp-add-input"/>
+                        <input value={newTeam} placeholder="Team #" onChange={handle_change} className="cp-add-input"/>
                         <div onClick={add_team} className="cp-add-button"><HiPlus/></div>
                     </div>
                     <div className="cp-refresh" onClick={load_data}><MdRefresh className="cp-refresh-icon"/></div>
-                    <div className="cp-color-mode" onClick={toggle_color}><MdLightMode/></div>
+                    {/**<div className="cp-color-mode" onClick={toggle_color}><MdLightMode/></div>**/}
                 </div>
             </div>
+
             <div className="cp-holder">
-            {teamData.map((team) => (
-                <div className="cp-card">
-                    <div className="cp-team-number"><strong>Team {team['TeamNumber']}</strong></div>
-                    <div className="cp-team-classifiers">{team['Division']} | {team['Tier']} | {team['State']}</div>
-                    <hr/>
-                    <div className="cp-score-text">Image Score: {team['ImageScore']}</div>
-                    {team['CiscoScore'] &&
-                        <div className="cp-score-text">Cisco Score: {team['CiscoScore']}</div>
-                    }
-                    <div className="cp-score-text">Total Score: {team['TotalScore']}</div>
-                    <hr/>
-                    <div className="cp-sub-holder">
-                        <div>
-                            <div className="cp-sub-title"><strong>Rank</strong></div>
-                            <div>{team['Place']} place</div>
-                            <div>{team['Percentile']} percentile</div>
-                        </div>
-                        <div>
-                            <div className="cp-sub-title"><strong>Margin</strong></div>
-                            <div>{team['PointsBelowFirst']} points below 1st place</div>
-                            <div>{team['PointsBelow']} points below {team['Place'] - 1} place</div>
-                            <div>{team['PointsAbove']} points above {team['Place'] + 1} place</div>
-                        </div>
-                        <div>
-                            <div className="cp-sub-title"><strong>Standing</strong></div>
-                            <div>{team['StateRank']} of {team['TotalTeamsState']} peer teams in state</div>
-                            <div>{team['TierRank']} of {team['TotalTeamsTier']} peer teams in tier</div>
-                            <div>{team['DivisionRank']} of {team['TotalTeamsDivision']} peer teams in division</div>
-                        </div>
+                {teamData.length == 0 &&
+                    <div style={{'display':'flex','flexDirection':'column','alignItems':'center'}}>
+                        <div style={{'fontSize': '30px', 'color': 'black', 'marginBottom': '20px', 'textAlign': 'center'}}>Welcome to the Unofficial CyberPatriot Team CyberTracker</div>
+                        <div style={{'fontSize': '20px', 'color': 'black', 'textAlign': 'center', 'marginBottom': '20px'}}>to begin enter a 4-digit Team Number into the top right (eg. 1767)</div>
+                        <div style={{'fontSize': '20px', 'color': 'black', 'textAlign': 'center', 'marginBottom': '20px', 'maxWidth': '800px'}}>if you want to load multiple teams at once or share your setup just copy and paste the link with teams separated by dashes like <strong>lakshay.io/cyberpatriot/XXXX-YYYY-ZZZZ</strong></div>
+                        <div style={{'fontSize': '20px', 'color': 'black', 'textAlign': 'center'}}><a target="_blank" href="http://scoreboard.uscyberpatriot.org/">Official CyberPatriot Scoreboard</a></div>
                     </div>
+                }
+                <div style={{'display': 'flex', 'justifyContent': 'end', 'paddingRight': '75px', 'paddingBottom': '50px', 'paddingTop': '10px'}}>
+                {teamData.length > 0 &&
+                    <div className="cp-display-toggle" onClick={change_display}>Toggle Layout</div>
+                }
                 </div>
-            ))}
+                <div className="cp-grid-main">
+                {currentDisplay == "grid" &&
+                <div className="cp-grid-holder">
+                <div className="cp-grid-header">
+                    <div className="cp-number">Number</div>
+                    <div className="cp-location">Location</div>
+                    <div className="cp-division">Division</div>
+                    <div className="cp-tier">Tier</div>
+                    <div className="cp-score">Score</div>
+                    <div className="cp-rank">Rank</div>
+                    <div className="cp-state-rank">State Rank</div>
+                </div>
+                {teamData.map((team, index) => (
+                    <div style={{'width': '100%'}}>
+                    { (index % 2 == 0) &&
+                    <div className="cp-grid-bar">
+                        <div className="cp-number">{team["TeamNumber"]}</div>
+                        <div className="cp-location">{team["State"]}</div>
+                        <div className="cp-division">{team["Division"]}</div>
+                        <div className="cp-tier">{team["Tier"]}</div>
+                        <div className="cp-score">{team["TotalScore"]}</div>
+                        <div className="cp-rank">{team["Place"]}</div>
+                        <div className="cp-state-rank">{team["StateRank"]}</div>
+                    </div>
+                    }
+                    {index%2 == 1 &&
+                    <div style={{'background-color': '#F2F2F2'}} className="cp-grid-bar">
+                        <div className="cp-number">{team["TeamNumber"]}</div>
+                        <div className="cp-location">{team["State"]}</div>
+                        <div className="cp-division">{team["Division"]}</div>
+                        <div className="cp-tier">{team["Tier"]}</div>
+                        <div className="cp-score">{team["TotalScore"]}</div>
+                        <div className="cp-rank">{team["Place"]}</div>
+                        <div className="cp-state-rank">{team["StateRank"]}</div>
+                    </div>
+                    }
+                    </div>
+                ))}
+                </div>
+                }
+                </div>
+                {currentDisplay == "card" &&
+                <div className="cp-card-holder">
+                {teamData.map((team) => (
+                    <div className={cardClass}>
+                        <div className="cp-team-number" onClick={() => go_to_team(team['TeamNumber'])}><strong>Team {team['TeamNumber']}</strong></div>
+                        {team['InvalidTeam'] == 1
+                        ? <div className="cp-team-number">Invalid Team or Team has not competed</div>
+                        : <div>
+                            <div className="cp-team-classifiers">{team['Division']} | {team['Tier']} | {team['State']}</div>
+                            <hr/>
+                            <div className="cp-score-text">Image Score: {team['ImageScore']}</div>
+                            {team['CiscoScore'] == 0 &&
+                                <div className="cp-score-text">Cisco Score: 0</div>
+                            }
+                            {team['CiscoScore'] != 0 &&
+                                <div className="cp-score-text">Cisco Score: {Math.round((team['CiscoScore'] + Number.EPSILON) * 100) / 100}</div>
+                            }
+                            {team['AdjustedScore'] == 0 &&
+                                <div className="cp-score-text">Administrative Adjustment: 0</div>
+                            }
+                            {team['AdjustedScore'] != 0 &&
+                                <div className="cp-score-text">Administrative Adjustment: {team['AdjustedScore']}</div>
+                            }
+                            <div className="cp-score-text">Total Score: {team['TotalScore']}</div>
+                            <hr/>
+                            <div className="cp-sub-holder">
+                                <div>
+                                    <div className="cp-sub-title"><strong>Rank</strong></div>
+                                    <div>{team['Place']} place</div>
+                                    <div>{team['Percentile']} percentile</div>
+                                </div>
+                                <div>
+                                    <div className="cp-sub-title"><strong>Margin</strong></div>
+                                    <div>{Math.round((team['PointsBelowFirst'] + Number.EPSILON) * 100) / 100} points below 1st place</div>
+                                    <div>{Math.round((team['PointsBelow'] + Number.EPSILON) * 100) / 100} points below {team['Place'] - 1} place</div>
+                                    <div>{Math.round((team['PointsAbove'] + Number.EPSILON) * 100) / 100} points above {team['Place'] + 1} place</div>
+                                </div>
+                                <div>
+                                    <div className="cp-sub-title"><strong>Standing</strong></div>
+                                    <div>{team['StateRank']} of {team['TotalTeamsState']} peer teams in state</div>
+                                    <div>{team['TierRank']} of {team['TotalTeamsTier']} peer teams in tier</div>
+                                    <div>{team['DivisionRank']} of {team['TotalTeamsDivision']} peer teams in division</div>
+                                </div>
+                            </div>
+                            <div className="cp-delete" onClick={() => delete_team(team['TeamNumber'])}>delete team</div>
+                          </div>
+                        }
+                    </div>
+                ))}
+                </div>
+                }
             </div>
+            {teamData.length > 1 && teamData.length < 20 &&
+            <div className="cp-chart-holder">
+                <div style={{'fontSize': "25px", 'color':'#444444', 'marginBottom': '20px'}}>Total Score Distribution</div>
+                <BarChart width={teamData.length*80} height={400} data={teamData}>
+                    <XAxis dataKey="TeamNumber" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="TotalScore" barSize={30} fill="#8884d8" />
+                </BarChart>
+            </div>
+            }
         </div>
     )
 }

@@ -1,30 +1,33 @@
 import pandas as pd
+from bs4 import BeautifulSoup
+import requests
 
 def scrape():
-    try:
-        url = "http://scoreboard.uscyberpatriot.org/"
+    r = requests.get('http://scoreboard.uscyberpatriot.org/')
 
-        scoreboard = pd.read_html(url)
-        df = scoreboard[0]
-        df.columns = df.iloc[0]
-        df = df[1:]
-        df.columns = df.columns.fillna('qdrop')
-        df = df.drop(df.columns[[0]], axis=1)
-        for id, team in df.iterrows():
-            if 'TotalScore' in team:
-                continue
-            else:
-                if team['CCSScore'] == None:
-                    team['CCSScore'] = '0'
-                ts = float(team['CCSScore'])
-                if 'Adjust' in team:
-                    ts += float(team['Adjust'])
-                if 'ChallengeScore' in team:
-                    ts += float(team['ChallengeScore'])
-                if 'CiscoScore' in team:
-                    ts += float(team['CiscoScore'])
-                df.at[id, 'TotalScore'] = str(ts)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    table = soup.find('table')
 
-        df.to_csv('data/scoreboard.csv')
-    except:
-        print("no tables")
+    df = pd.read_html(str(table))[0]
+    df.columns = df.iloc[0]
+    df = df[1:]
+    df.columns = df.columns.fillna('index')
+    df = df.drop(df.columns[0], axis=1)
+    df = df.astype({'Team Number': str, 'CCS Score': int})
+    for id, team in df.iterrows():
+        if 'Total Score' in team:
+            continue
+        else:
+            if team['CCS Score'] == None:
+                team['CCS Score'] = '0'
+            ts = float(team['CCS Score'])
+            if 'Adjust' in team:
+                ts += float(team['Adjust'])
+            if 'Challenge Score' in team:
+                ts += float(team['Challenge Score'])
+            if 'Cisco Score' in team:
+                ts += float(team['Cisco Score'])
+                print(team['Cisco Score'])
+            df.at[id, 'Total Score'] = str(ts)
+    df = df.rename(columns={'Team Number':'TeamNumber','Location/ Category':'Location/Category','Team Number':'TeamNumber',})
+    df.to_csv('data/scoreboard.csv')

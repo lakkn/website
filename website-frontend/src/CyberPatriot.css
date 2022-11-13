@@ -18,6 +18,7 @@
   justify-content: space-between;
   padding: 5px;
   transition: 500ms;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .cp-navbar-dark{
@@ -124,13 +125,100 @@
   transform: rotate(360deg);
 }
 
-.cp-holder{
-  margin-top: 90px;
+.cp-card-holder{
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 90px;
+  gap: 40px;
   padding-bottom: 90px;
+}
+
+.cp-grid-holder{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 25px;
+  padding-bottom: 50px;
+  width: 80%;
+}
+
+.cp-grid-main{
+  display: flex;
+  justify-content: center;
+}
+
+.cp-grid-header{
+  display: flex;
+  background-color: #67A9ED;
+  color: #EEEEEE;
+  width: 100%;
+  height: 60px;
+  font-size: 25px;
+  align-items: center;
+}
+
+.cp-grid-bar{
+  display: flex;
+  background-color: #EBEBEB;
+  width: 100%;
+  height: 45px;
+  align-items: center;
+  color: #444444;
+  font-size: 20px;
+}
+
+.cp-number{
+  width: 15%;
+  text-align: center;
+}
+.cp-location{
+  width: 15%;
+  text-align: center;
+}
+.cp-division{
+  width: 15%;
+  text-align: center;
+}
+.cp-tier{
+  width: 15%;
+  text-align: center;
+}
+.cp-score{
+  width: 10%;
+  text-align: center;
+}
+.cp-rank{
+  width: 15%;
+  text-align: center;
+}
+.cp-state-rank{
+  width: 15%;
+  text-align: center;
+}
+
+.cp-holder{
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.cp-display-toggle{
+  width: 150px;
+  height: 50px;
+  background-color: #444444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  transition: 400ms;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.cp-display-toggle:hover{
+  background-color: #222222;
+  color: #DDDDDD;
 }
 
 .cp-card{
@@ -143,6 +231,7 @@
   padding: 30px;
   width: 400px;
   transition: 500ms;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .cp-card-dark{
@@ -152,6 +241,7 @@
 
 .cp-team-number{
   font-size: 25px;
+  cursor: pointer;
 }
 
 .cp-team-classifiers{
@@ -160,6 +250,8 @@
 }
 
 .cp-score-text{
+  margin-top: 5px;
+  margin-bottom: 5px;
   font-size: 18px;
 }
 
@@ -173,4 +265,73 @@
   margin-top: 10px;
   font-size: 20px;
   margin-bottom: 5px;
+}
+
+.cp-delete{
+  width: 115px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  background-color: #333;
+  margin-top: 15px;
+  color: #ddd;
+  transition: 500ms;
+}
+
+.cp-delete:hover{
+  background-color: #000;
+  color: #aaa;
+}
+
+.cp-chart-holder{
+  width: 100%;
+  background-color: #fbfbfb;
+  display: flex;
+  padding-top: 100px;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 100px;
+}
+
+#cp-alert{
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #FE2C32;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  top: 30px;
+}
+
+#cp-alert.cp-show{
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {top: -10px; opacity: 0;}
+  to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {top: -10px; opacity: 0;}
+  to {top: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 30px; opacity: 1;}
+  to {top: -10px; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 30px; opacity: 1;}
+  to {top: -10px; opacity: 0;}
 }
