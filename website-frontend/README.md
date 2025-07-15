@@ -1,70 +1,97 @@
-# Getting Started with Create React App
+# Lakshay Kansal - Portfolio Website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, responsive portfolio website built with React and TailwindCSS.
 
-## Available Scripts
+## 🚀 Quick Deploy to Vercel
 
-In the project directory, you can run:
+1. **Push to GitHub**: Make sure your code is in a GitHub repository
+2. **Connect to Vercel**: 
+   - Go to [vercel.com/dashboard](https://vercel.com/dashboard)
+   - Click "New Project" → Import from GitHub
+   - Select your repository
+3. **Configure**:
+   - **Root Directory**: `website/website-frontend`
+   - **Framework**: Create React App (auto-detected)
+4. **Deploy**: Click "Deploy" and wait for completion
 
-### `npm start`
+That's it! Your portfolio will be live at `https://your-project-name.vercel.app`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📁 Project Structure
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+website/website-frontend/
+├── public/
+├── src/
+│   ├── images/        # Logo and profile images
+│   ├── App.js         # Main application component
+│   ├── index.css      # TailwindCSS and custom styles
+│   └── index.js       # React entry point
+├── vercel.json        # Vercel deployment configuration
+├── package.json       # Dependencies and scripts
+└── DEPLOYMENT.md      # Detailed deployment guide
+```
 
-### `npm test`
+## 🛠️ Development
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+# Install dependencies
+npm install
 
-### `npm run build`
+# Start development server
+npm start
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Build for production
+npm run build
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Test production build locally
+npm install -g serve
+serve -s build
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📦 Technologies Used
 
-### `npm run eject`
+- **React 18** - Frontend framework
+- **TailwindCSS 3** - Utility-first CSS framework
+- **React Router** - Client-side routing
+- **React Icons** - Icon library
+- **Recharts** - Chart library for data visualization
+- **Vercel** - Deployment platform
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🎨 Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Modern Design**: Clean, professional layout with dark theme
+- **Responsive**: Works perfectly on all devices
+- **Interactive**: Smooth animations and hover effects
+- **Performance**: Optimized builds with TailwindCSS purging
+- **SEO Ready**: Proper meta tags and structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📄 Sections
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Hero**: Introduction with animated typewriter effect
+- **Skills**: Technology stack with animated icons
+- **Experience**: Professional timeline with company logos
+- **Education**: Academic background
+- **Projects**: Portfolio projects (currently hidden)
 
-## Learn More
+## 🔧 Configuration Files
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **`vercel.json`**: Handles SPA routing for React Router
+- **`.vercelignore`**: Excludes unnecessary files from deployment
+- **`tailwind.config.js`**: TailwindCSS configuration
+- **`postcss.config.js`**: PostCSS configuration
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📚 Deployment Guide
 
-### Code Splitting
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🌟 Live Demo
 
-### Analyzing the Bundle Size
+Once deployed, your portfolio will showcase:
+- Professional experience at DeepWeave, Haymarket Media, and Nomic
+- Education from University of Virginia and Deep Run High School
+- Technical skills with modern frameworks
+- Clean, modern design that stands out
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Built with ❤️ by Lakshay Kansal

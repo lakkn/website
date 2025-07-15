@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import './App.css';
-import './CyberPatriot.css';
+import React, { useEffect, useState, useCallback } from 'react';
 import { IoLogoLinkedin, IoLogoGithub } from "react-icons/io5";
 import { SiPython, SiReact, SiHtml5, SiJava, SiGit, SiAmazonaws } from "react-icons/si";
-import { HiPlus } from "react-icons/hi";
-import { MdRefresh, MdLightMode } from "react-icons/md";
+import { HiPlus, HiMenu, HiX } from "react-icons/hi";
+import { MdRefresh } from "react-icons/md";
+import { FiDownload } from "react-icons/fi";
 import lakshay from './images/lakshay.jpeg';
 import nomic_logo from './images/nomic.png';
 import lambda from './images/lambda.svg';
 import deeprun from './images/deeprun.png';
+import haymarket_logo from './images/haymarket.jpg';
+import deepweave_logo from './images/deepweave.png';
 import Pdf from './Lakshay_Kansal.pdf';
 import LoadingOverlay from 'react-loading-overlay-ts';
 import PropagateLoader from 'react-spinners/PropagateLoader';
@@ -19,364 +20,585 @@ import {
     Routes,
     Route,
     Link,
-    useParams,
-    useSearchParams,
-    useLocation,
 } from "react-router-dom";
 
-// path config for api
-// const api_base_path = process.env.REACT_APP_API_BASE_PATH || 'http://localhost'
+// API configuration
 const api_base_path = 'https://0tc8svpio2.execute-api.us-east-1.amazonaws.com/default'
-//const api_base_path = 'http://localhost:80'
 
-function App() {
+const App = () => {
     return (
-        <div className="App">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
             <Router>
                 <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/sudoku" element={<Sudoku/>}/>
-                    <Route path="/movie" element={<Movie/>}/>
-                    <Route path="/cyberpatriot" element={<CyberPatriot/>}/>
-                    <Route path="/cyberpatriot/:teams" element={<CyberPatriot/>}/>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/sudoku" element={<Sudoku />} />
+                    <Route path="/movie" element={<Movie />} />
+                    <Route path="/cyberpatriot" element={<CyberPatriot />} />
+                    <Route path="/cyberpatriot/:teams" element={<CyberPatriot />} />
                 </Routes>
             </Router>
         </div>
     );
 }
 
-function Home() {
+const Home = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState('home');
 
-    const resume = () => {
-        window.open(Pdf);
-    }
+    const handleResumeClick = () => {
+        window.open(Pdf, '_blank');
+    };
 
-    const github = () => {
+    const handleGithubClick = () => {
         window.open('https://github.com/lakkn', '_blank');
     };
 
-    const linkedin = () => {
+    const handleLinkedinClick = () => {
         window.open('https://www.linkedin.com/in/lakshay-kansal-5443341b9/', '_blank');
     };
 
-    const nomic = () => {
+    const handleNomicClick = () => {
         window.open('https://home.nomic.ai/', '_blank');
     };
 
-    const sudoku = () => {
-        // window.location.href = window.location.protocol + "//sudoku." + window.location.host;
-        window.location.href = window.location.href + 'sudoku';
+    const handleHaymarketClick = () => {
+        window.open('https://haymarket.com/', '_blank');
     };
 
-    const movie = () => {
-        // window.location.href = window.location.protocol + "//movie." + window.location.host;
-        window.location.href = window.location.href + 'movie';
+    const handleDeepWeaveClick = () => {
+        window.open('https://www.deepweave.org/', '_blank');
     };
 
-    const cyberpatriot = () => {
-        window.location.href = window.location.href + 'cyberpatriot';
-    }
+    // Project navigation functions - commented out while projects section is hidden
+    // const handleSudokuClick = () => {
+    //     window.location.href = window.location.href + 'sudoku';
+    // };
 
-    const toggle_menu = () => {
-        const nav_content = document.querySelector(".h-navbar-content");
-        const nav_button = document.querySelector(".h-mobile-nav-toggle");
-        const visibility = nav_content.getAttribute('data-visible');
-        nav_button.classList.toggle("open");
-        document.body.classList.toggle("blur");
-        if(visibility === "false"){
-            nav_content.setAttribute('data-visible', 'true');
-            nav_button.setAttribute('aria-expanded', 'true');
-        }else{
-            nav_content.setAttribute('data-visible', 'false');
-            nav_button.setAttribute('aria-expanded', 'false');
-        }
-    }
+    // const handleMovieClick = () => {
+    //     window.location.href = window.location.href + 'movie';
+    // };
 
-    const go_to = (num) => {
-        if(num === 1){
-            document.getElementById('h-projects').scrollIntoView({behavior: "smooth"});
-        }
-        if(num === 2){
-            document.getElementById('h-skills').scrollIntoView({behavior: "smooth"});
-        }
-        if(num === 3){
-            document.getElementById('h-experience').scrollIntoView({behavior: "smooth"});
-        }
-        if(num === 4){
-            document.getElementById('h-education').scrollIntoView({behavior: "smooth"})
-        }
-        toggle_menu();
+    // const handleCyberpatriotClick = () => {
+    //     window.location.href = window.location.href + 'cyberpatriot';
+    // };
+
+    const handleToggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
     };
+
+    const handleScrollTo = (sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+        setIsMenuOpen(false);
+    };
+
+    // Intersection Observer for active section
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            { threshold: 0.3 }
+        );
+
+        const sections = ['home', 'skills', 'experience', 'education'];
+        sections.forEach((section) => {
+            const element = document.getElementById(section);
+            if (element) observer.observe(element);
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     return (
-        <div className="h-whole">
-            <div className="h-navbar">
-                <div className="h-navbar-logo">
-                    <img style={{"filter":"invert(88%) sepia(6%) saturate(78%) hue-rotate(87deg) brightness(93%) contrast(85%)"}} className="h-navbar-image" alt="" src={ lambda } />
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+            {/* Navigation */}
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
+                        {/* Logo */}
+                        <div className="flex items-center">
+                            <img 
+                                src={lambda} 
+                                alt="Logo" 
+                                className="h-8 w-8 invert opacity-80"
+                            />
+                        </div>
+
+                        {/* Desktop Navigation */}
+                        <div className="hidden md:flex items-center space-x-8">
+                            {[
+                                { id: 'skills', label: 'Skills' },
+                                { id: 'experience', label: 'Experience' },
+                                { id: 'education', label: 'Education' },
+                            ].map(({ id, label }) => (
+                                <button
+                                    key={id}
+                                    onClick={() => handleScrollTo(id)}
+                                    className={`text-sm font-medium transition-colors duration-200 ${
+                                        activeSection === id
+                                            ? 'text-blue-400'
+                                            : 'text-slate-300 hover:text-white'
+                                    }`}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                            <button
+                                onClick={handleResumeClick}
+                                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                            >
+                                <FiDownload className="w-4 h-4 mr-2" />
+                                Resume
+                            </button>
+                        </div>
+
+                        {/* Mobile menu button */}
+                        <div className="md:hidden">
+                            <button
+                                onClick={handleToggleMenu}
+                                className="text-slate-300 hover:text-white p-2"
+                            >
+                                {isMenuOpen ? <HiX className="w-6 h-6" /> : <HiMenu className="w-6 h-6" />}
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div onClick={toggle_menu} className="h-mobile-nav-toggle" id="h-nav-toggle" aria-controls="h-primary-nav" aria-expanded="false"><span></span><span></span><span></span><span></span></div>
-                <div data-visible="false" id="h-primary-nav" className="h-navbar-content">
-                    <div style={{'cursor':'pointer'}} onClick={() => go_to(1)}>
-                        Projects
+
+                {/* Mobile Navigation */}
+                {isMenuOpen && (
+                    <div className="md:hidden bg-slate-800/95 backdrop-blur-md border-t border-slate-700/50">
+                        <div className="px-2 pt-2 pb-3 space-y-1">
+                            {[
+                                { id: 'skills', label: 'Skills' },
+                                { id: 'experience', label: 'Experience' },
+                                { id: 'education', label: 'Education' },
+                            ].map(({ id, label }) => (
+                                <button
+                                    key={id}
+                                    onClick={() => handleScrollTo(id)}
+                                    className="block w-full text-left px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-md transition-colors duration-200"
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                            <button
+                                onClick={handleResumeClick}
+                                className="block w-full text-left px-3 py-2 text-blue-400 hover:text-blue-300 hover:bg-slate-700/50 rounded-md transition-colors duration-200"
+                            >
+                                Resume
+                            </button>
+                        </div>
                     </div>
-                    <div style={{'cursor':'pointer'}} onClick={() => go_to(2)}>
-                        Skills
+                )}
+            </nav>
+
+            {/* Hero Section */}
+            <section id="home" className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        {/* Left side - Text */}
+                        <div className="space-y-8 animate-fade-in-up">
+                            <div className="space-y-4">
+                                <p className="text-blue-400 text-lg font-medium">Hello, I'm</p>
+                                <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight">
+                                    LAKSHAY KANSAL
+                                </h1>
+                                <div className="flex items-center space-x-4 text-2xl md:text-3xl">
+                                    <span className="text-slate-300">A</span>
+                                    <div className="relative">
+                                        <span className="text-yellow-400 font-mono typewriter">
+                                            Student
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-4 text-2xl md:text-3xl">
+                                    <span className="text-slate-300">A</span>
+                                    <div className="relative">
+                                        <span className="text-green-400 font-mono typewriter animation-delay-1000">
+                                            Developer
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-4 text-2xl md:text-3xl">
+                                    <span className="text-slate-300">A</span>
+                                    <div className="relative">
+                                        <span className="text-purple-400 font-mono typewriter animation-delay-2000">
+                                            Human
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Social Links */}
+                            <div className="flex space-x-6">
+                                <button
+                                    onClick={handleGithubClick}
+                                    className="p-3 bg-slate-800 hover:bg-slate-700 rounded-full transition-all duration-300 hover:scale-110"
+                                    aria-label="GitHub"
+                                >
+                                    <IoLogoGithub className="w-6 h-6 text-slate-300" />
+                                </button>
+                                <button
+                                    onClick={handleLinkedinClick}
+                                    className="p-3 bg-slate-800 hover:bg-slate-700 rounded-full transition-all duration-300 hover:scale-110"
+                                    aria-label="LinkedIn"
+                                >
+                                    <IoLogoLinkedin className="w-6 h-6 text-blue-400" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Right side - Image */}
+                        <div className="flex justify-center lg:justify-end animate-fade-in-up">
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+                                <img
+                                    src={lakshay}
+                                    alt="Lakshay Kansal"
+                                    className="relative w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-4 border-slate-700 shadow-2xl"
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <div style={{'cursor':'pointer'}} onClick={() => go_to(3)}>
-                        Experience
+                </div>
+            </section>
+
+            {/* Projects Section - Hidden for now */}
+            {/* <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Projects</h2>
+                        <p className="text-slate-400 text-lg">Here are some of my recent projects</p>
                     </div>
-                    <div style={{'cursor':'pointer'}} onClick={() => go_to(4)}>
-                        Education
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[
+                            {
+                                title: "CyberPatriot Tracker",
+                                description: "Track and analyze CyberPatriot team performance",
+                                onClick: handleCyberpatriotClick,
+                                gradient: "from-red-500 to-pink-500"
+                            },
+                            {
+                                title: "Sudoku Solver",
+                                description: "AI-powered sudoku solving algorithm",
+                                onClick: handleSudokuClick,
+                                gradient: "from-blue-500 to-cyan-500"
+                            },
+                            {
+                                title: "Movie Recommender",
+                                description: "Personalized movie recommendation system",
+                                onClick: handleMovieClick,
+                                gradient: "from-purple-500 to-indigo-500"
+                            }
+                        ].map((project, index) => (
+                            <div
+                                key={index}
+                                onClick={project.onClick}
+                                className="group relative bg-slate-900 rounded-2xl p-6 hover:bg-slate-800 transition-all duration-300 cursor-pointer hover-lift"
+                            >
+                                <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+                                <div className="relative z-10">
+                                    <h3 className="text-xl font-semibold text-white mb-3">{project.title}</h3>
+                                    <p className="text-slate-400 mb-4">{project.description}</p>
+                                    <div className="flex items-center text-blue-400 group-hover:text-blue-300 transition-colors duration-300">
+                                        <span className="text-sm font-medium">View Project</span>
+                                        <FiExternalLink className="w-4 h-4 ml-2" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <div style={{'cursor':'pointer'}} onClick={resume}>
-                        Résumé
+                </div>
+            </section> */}
+
+            {/* Skills Section */}
+            <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/30">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Skills</h2>
+                        <p className="text-slate-400 text-lg">Technologies I work with</p>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+                        {[
+                            { icon: SiPython, name: "Python", color: "text-yellow-400" },
+                            { icon: SiReact, name: "React.JS", color: "text-cyan-400" },
+                            { icon: SiHtml5, name: "HTML/CSS", color: "text-orange-400" },
+                            { icon: SiJava, name: "Java", color: "text-red-400" },
+                            { icon: SiGit, name: "Git", color: "text-orange-500" },
+                            { icon: SiAmazonaws, name: "AWS", color: "text-yellow-400" }
+                        ].map((skill, index) => (
+                            <div
+                                key={index}
+                                className="flex flex-col items-center p-6 bg-slate-900 rounded-xl hover:bg-slate-800 transition-all duration-300 hover-lift group"
+                            >
+                                <skill.icon className={`w-12 h-12 ${skill.color} mb-3 group-hover:scale-110 transition-transform duration-300`} />
+                                <span className="text-slate-300 text-sm font-medium">{skill.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Experience Section */}
+            <section id="experience" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Experience</h2>
+                        <p className="text-slate-400 text-lg">My professional journey</p>
+                    </div>
+                    <div className="max-w-4xl mx-auto">
+                        <div className="relative">
+                            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-slate-700"></div>
+                            <div className="space-y-12">
+                                {/* DeepWeave - Most Recent */}
+                                <div className="relative flex items-start">
+                                    <div className="flex-shrink-0 w-16 h-16 bg-white rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300">
+                                        <img
+                                            src={deepweave_logo}
+                                            alt="DeepWeave"
+                                            className="w-10 h-10 object-contain"
+                                            onClick={handleDeepWeaveClick}
+                                        />
+                                    </div>
+                                    <div className="ml-8 flex-1">
+                                        <div className="bg-slate-900 rounded-xl p-6 hover:bg-slate-800 transition-colors duration-300">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="text-xl font-semibold text-blue-400">Co-Founder and CEO</h3>
+                                                <span className="text-slate-400 text-sm">2025 - Present</span>
+                                            </div>
+                                            <p className="text-slate-300 mb-2 font-medium">DeepWeave</p>
+                                            <p className="text-slate-300">
+                                            Engineered Plannr, a fully functional AI-powered Meal Planning application that utilizes
+                                            professional grade LLM models and Stable Diffusion Loras to produce both unique cooking
+                                            recipes and dish images tailored to the users preferences, distastes, and budget.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Haymarket Media */}
+                                <div className="relative flex items-start">
+                                    <div className="flex-shrink-0 w-16 h-16 bg-white rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300">
+                                        <img
+                                            src={haymarket_logo}
+                                            alt="Haymarket Media"
+                                            className="w-10 h-10 object-contain"
+                                            onClick={handleHaymarketClick}
+                                        />
+                                    </div>
+                                    <div className="ml-8 flex-1">
+                                        <div className="bg-slate-900 rounded-xl p-6 hover:bg-slate-800 transition-colors duration-300">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="text-xl font-semibold text-blue-400">Data Engineering Intern</h3>
+                                                <span className="text-slate-400 text-sm">2025 - 2025</span>
+                                            </div>
+                                            <p className="text-slate-300 mb-2 font-medium">Haymarket Media</p>
+                                            <p className="text-slate-300">
+                                            Leveraged prompt engineering with Google’s Vertex AI to normalize the varied headers
+                                            throughout the companies large database. Lead the product team for designing and
+                                            prototyping an AI chatbot within legal AI guidelines for a healthcare practitioner course
+                                            catalog provided by the company. Communicated regularly with design, content, marketing,
+                                            and legal teams to bring the product to fruition. 
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Nomic */}
+                                <div className="relative flex items-start">
+                                    <div className="flex-shrink-0 w-16 h-16 bg-white rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300">
+                                        <img
+                                            src={nomic_logo}
+                                            alt="Nomic"
+                                            className="w-10 h-10 object-contain"
+                                            onClick={handleNomicClick}
+                                        />
+                                    </div>
+                                    <div className="ml-8 flex-1">
+                                        <div className="bg-slate-900 rounded-xl p-6 hover:bg-slate-800 transition-colors duration-300">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="text-xl font-semibold text-blue-400">Software Engineer</h3>
+                                                <span className="text-slate-400 text-sm">2023 - 2024</span>
+                                            </div>
+                                            <p className="text-slate-300 mb-2 font-medium">Nomic</p>
+                                            <p className="text-slate-300 mb-4">
+                                                Developed UI for GPT4All’s (70k+ starred github open-source LLM repo) LLM Client,
+                                                to accurately and proficiently display the results of API calls and AI requests to
+                                                models, including incorporation of markdown for text and formatting for various programming
+                                                languages. Worked closely with Web Dev Professionals in effectively converting website
+                                                design to applicable code for website revamp and transfer from React.JS to Next.JS.
+                                            </p>
+                                            <div className="border-t border-slate-700 pt-4">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <h4 className="text-lg font-semibold text-blue-400">Intern</h4>
+                                                    <span className="text-slate-400 text-sm">2022 - 2023</span>
+                                                </div>
+                                                <p className="text-slate-300">
+                                                    Constructed Nomic News, a platform that scrapes various news sources from 
+                                                    pro-western and pro-russian sources and simplistically displays it to see 
+                                                    the difference in the point-of-views of russian and western propaganda.
+                                                    Utilized React.JS and Python to develop an interactive frontend for Nomic's
+                                                    Atlas Maps to give users a better understanding of their data.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Education Section */}
+            <section id="education" className="py-20 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Education</h2>
+                        <p className="text-slate-400 text-lg">My educational background</p>
+                    </div>
+                    <div className="max-w-4xl mx-auto">
+                        <div className="space-y-8">
+                            {/* University of Virginia */}
+                            <div className="bg-slate-900 rounded-xl p-8 hover:bg-slate-800 transition-colors duration-300">
+                                <div className="flex items-center mb-4">
+                                    <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mr-6">
+                                        <span className="text-white font-bold text-xl">UVA</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="text-xl font-semibold text-blue-400">
+                                                    Bachelor of Science in Computer Science
+                                                </h3>
+                                                <p className="text-slate-300">University of Virginia</p>
+                                            </div>
+                                            <span className="text-slate-400 text-sm">2023 - 2027</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Deep Run High School */}
+                            <div className="bg-slate-900 rounded-xl p-8 hover:bg-slate-800 transition-colors duration-300">
+                                <div className="flex items-center mb-4">
+                                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mr-6">
+                                        <img
+                                            src={deeprun}
+                                            alt="Deep Run High School"
+                                            className="w-10 h-10 object-contain"
+                                        />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="text-xl font-semibold text-blue-400">
+                                                    Center for Information Technology
+                                                </h3>
+                                                <p className="text-slate-300">Deep Run High School</p>
+                                            </div>
+                                            <span className="text-slate-400 text-sm">2019 - 2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-900 border-t border-slate-700">
+                <div className="max-w-7xl mx-auto text-center">
+                    <p className="text-slate-400">
+                        © 2024 Lakshay Kansal. All rights reserved.
+                    </p>
+                </div>
+            </footer>
+        </div>
+    );
+};
+
+const Sudoku = () => {
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+            <div className="max-w-4xl mx-auto">
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700">
+                    <Link 
+                        to="/"
+                        className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-200 mb-6"
+                    >
+                        ← Go back
+                    </Link>
+                    <h1 className="text-3xl font-bold text-white mb-4">Sudoku Solver</h1>
+                    <p className="text-slate-300 mb-4">Full demo coming soon</p>
+                    <div className="flex items-center text-slate-300">
+                        <span className="mr-2">GitHub repository:</span>
+                        <a 
+                            href="https://github.com/lakkn/sudoku-solver" 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                        >
+                            https://github.com/lakkn/sudoku-solver
+                        </a>
                     </div>
                 </div>
             </div>
-            <div className="h-page">
-                <div className="h-start-container">
-                    <div className="h-start">
-                        <p className="h-start-text noselect"><i>hello, i'm</i></p>
-                        <p className="h-start-head noselect" style={{'color':'#B5BD68'}}><strong>LAKSHAY KANSAL</strong></p>
-                        <div className="h-subtitles">
-                            <div className="h-static-txt">A</div>
-                            <ul className="h-dynamic-txts">
-                                <li><span>Student</span></li>
-                                <li><span>Programmer</span></li>
-                                <li><span>Developer</span></li>
-                                <li><span>Human</span></li>
-                            </ul>
-                        </div>
-                        <div className="h-contact-logos">
-                            <IoLogoGithub onClick={github} className="h-contact-logo" />
-                            <IoLogoLinkedin onClick={linkedin} className="h-contact-logo" />
-                        </div>
-                    </div>
-                    <div className="h-start-image">
-                        <img className="selector" src={lakshay} alt="me" />
-                    </div>
-                </div>
-                <div id="h-projects" className="h-section">
-                    <p className="h-section-head noselect"><strong>Projects</strong></p>
-                    <div className="h-project-holder noselect">
-                        <button onClick={cyberpatriot} className="h-project-card"><p className="h-project-card-text">cyberpatriot tracker</p></button>
-                        <button onClick={sudoku} className="h-project-card"><p className="h-project-card-text">sudoku solver</p></button>
-                        <button onClick={movie} className="h-project-card"><p className="h-project-card-text">movie recommender</p></button>
-                    </div>
-                </div>
-                <div id="h-skills" className="h-section">
-                    <p className="h-section-head noselect"><strong>Skills</strong></p>
-                    <div className="h-skills-holder">
-                        <div className="h-skill-card">
-                            <SiPython style={{'color':'#F0C674','width': '50px', 'height': '50px'}}/>
-                            Python
-                        </div>
-                        <div className="h-skill-card">
-                            <SiReact style={{'color':'#8ABEB7','width': '50px', 'height': '50px'}}/>
-                            React.JS
-                        </div>
-                        <div className="h-skill-card">
-                            <SiHtml5 style={{'color':'#CC6666','width': '50px', 'height': '50px'}}/>
-                            HTML/CSS
-                        </div>
-                        <div className="h-skill-card">
-                            <SiJava style={{'color':'#81A2BE','width': '50px', 'height': '50px'}}/>
-                            Java
-                        </div>
-                        <div className="h-skill-card">
-                            <SiGit style={{'color':'#DE935F','width': '50px', 'height': '50px'}}/>
-                            Git
-                        </div>
-                        <div className="h-skill-card">
-                            <SiAmazonaws style={{'color':'#F0C674','width': '50px', 'height': '50px'}}/>
-                            AWS
-                        </div>
-                    </div>
-                </div>
-                <div id="h-experience" className='h-section'>
-                    <p className="h-section-head noselect"><strong>Experience</strong></p>
-                    <div className="h-experience-holder">
-                        <div className="h-experience">
-                            <div className="h-experience-header" onClick={nomic} style={{'background': '#ffffff'}}>
-                                <div className="h-experience-image-holder"><img alt="" src={nomic_logo} className="h-experience-image" /></div>
-                            </div>
-                            <div className="h-experience-description">
-                                <div className="h-experience-title" style={{'color': '#81A2BE'}}>Junior Software Engineer</div>
-                                <div className="h-experience-content">- Utilized React.JS and Python to develop an interactive frontend for Nomic's Atlas Maps to give users a better understanding of their data.</div>
-                                <div className="h-experience-title" style={{'color': "#81A2BE"}}>Intern</div>
-                                <div className="h-experience-content">- Constructed Nomic News, a platform that scrapes various news sources from pro-western and pro-russian sources and simplistically displays it to see the difference in the point-of-views of russian and western propaganda.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="h-education" className='h-section'>
-                    <p className="h-section-head noselect"><strong>Education</strong></p>
-                    <div className="h-experience-holder">
-                        <div className="h-experience">
-                            <div className="h-experience-header" style={{'background': '#ffffff'}}>
-                                <div className="h-experience-image-holder"><img alt="" src={deeprun} className="h-experience-image" /></div>
-                            </div>
-                            <div className="h-experience-description" style={{'justifyContent': 'center'}}>
-                                <div className="h-experience-title" style={{'max-width': '360px', 'color': '#81A2BE'}}>Center for Information Technology at Deep Run High School</div>
-                            </div>
-                        </div>
+        </div>
+    );
+};
+
+const Movie = () => {
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+            <div className="max-w-4xl mx-auto">
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700">
+                    <Link 
+                        to="/"
+                        className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-200 mb-6"
+                    >
+                        ← Go back
+                    </Link>
+                    <h1 className="text-3xl font-bold text-white mb-4">Movie Recommender</h1>
+                    <p className="text-slate-300 mb-4">Full demo coming soon</p>
+                    <div className="flex items-center text-slate-300">
+                        <span className="mr-2">GitHub repository:</span>
+                        <a 
+                            href="https://github.com/lakkn/movie-recommender" 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                        >
+                            https://github.com/lakkn/movie-recommender
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-function Sudoku() {
-    return (
-        <div style={{'margin': '30px'}}>
-            <div><a href={window.location.protocol + "//" + window.location.host}>go back</a></div>
-            <div>full demo coming soon</div>
-            <div>github repository: <a href="https://github.com/lakkn/sudoku-solver" target="_blank" rel="noreferrer">https://github.com/lakkn/sudoku-solver</a></div>
-        </div>
-    )
-}
-
-function Movie() {
-    return (
-        <div style={{'margin': '30px'}}>
-            <div><a href={window.location.protocol + "//" + window.location.host}>go back</a></div>
-            <div>full demo coming soon</div>
-            <div>github repository: <a href="https://github.com/lakkn/movie-recommender" target="_blank" rel="noreferrer">https://github.com/lakkn/movie-recommender</a></div>
-        </div>
-    )
-}
-
-function CyberPatriot() {
-
+const CyberPatriot = () => {
     const [teams, setTeams] = useState([]);
     const [teamData, setTeamData] = useState([]);
     const [urlLoaded, setUrlLoaded] = useState(0);
     const [newTeam, setNewTeam] = useState("");
     const [currentDisplay, toggleDisplay] = useState('card');
-
-    useEffect(() => {
-        var windows_raw = window.location.href.split('/');
-        var teams_raw = windows_raw[windows_raw.length - 1];
-        if(teams_raw != "cyberpatriot" && urlLoaded < 10){
-            var teams_link = teams_raw.split("-");
-            let link_check = true;
-            for(var i = 0; i < teams_link.length; i++){
-                var current_team = teams_link[i];
-                if(current_team.length != 4){
-                    link_check = false;
-                }
-            }
-            if(link_check){
-                setTeams(teams_link);
-                get_team_data();
-            }else{
-
-            }
-            setUrlLoaded(urlLoaded + 1);
-        }
-    });
-
-    const handle_change = (event) => {
-        setNewTeam(event.target.value);
-    }
-
-    const change_display = () => {
-        if(currentDisplay == "card"){
-            toggleDisplay("grid");
-        }else{
-            toggleDisplay("card");
-        }
-    }
-
-    const go_to_team = (team_num) => {
-        window.open('http://scoreboard.uscyberpatriot.org/team.php?team='+team_num, '_blank');
-    }
-
-    const load_data = () => {
-        var windows_raw = window.location.href.split('/');
-        var teams_raw = windows_raw[windows_raw.length - 1];
-        if(teams_raw != "cyberpatriot"){
-            var teams_link = teams_raw.split("-");
-            let link_check = true;
-            for(var i = 0; i < teams_link.length; i++){
-                var current_team = teams_link[i];
-                if(current_team.length != 4){
-                    link_check = false;
-                }
-            }
-            if(link_check){
-                setTeams(teams_link);
-                console.log('get team');
-                get_team_data();
-            }
-        }
-    };
-
-    const add_team = () => {
-        if(newTeam.length == 4){
-            var teams_holder = teams;
-            if(teams_holder.indexOf(newTeam) !== -1){
-                alert('team already exists');
-            }else{
-                teams_holder.push(newTeam);
-                setTeams(teams_holder);
-                var current_url = window.location.href;
-                if(current_url.split('/')[current_url.split('/').length-1] == 'cyberpatriot'){
-                    window.history.pushState("", "", "cyberpatriot/"+newTeam);
-                }else if(current_url.split('/')[current_url.split('/').length-1] == ''){
-                    window.history.pushState("","", newTeam);
-                }else{
-                    window.history.pushState("", "", current_url.split('/')[current_url.split('/').length-1]+"-"+newTeam);
-                }
-                get_team_data();
-            }
-        }else{
-            alert('team length is greater than 4');
-        }
-    }
-
-    const delete_team = (team) => {
-        var tnum = team.substring(3);
-        var teams_holder = teams;
-        //teams_holder.pop(teams_holder.indexOf(tnum)-1);
-        teams_holder = teams_holder.filter(function(item) {
-            return item !== tnum
-        })
-        var teams_data = teamData;
-        teams_data = teams_data.filter(function(item) {
-            return item['TeamNumber'] != team
-        })
-        setTeamData(teams_data);
-        setTeams(teams_holder);
-        var current_url = window.location.href;
-        if(teams_holder.length > 0){
-            if(current_url.split('/')[current_url.split('/').length-1] == 'cyberpatriot'){
-                //do nothing
-            }else if(current_url.split('/')[current_url.split('/').length-1] == ''){
-                //do nothing
-            }else{
-                window.history.pushState("", "", teams_holder.join("-"));
-            }
-        }else{
-            setTeamData([]);
-            window.history.pushState("", "", "");
-        }
-    }
-
+    const [cardClass] = useState('bg-slate-800 border border-slate-700');
     const [alertMessage, setAlertMessage] = useState('');
-    const alert = (message) => {
-        setAlertMessage(message);
-        var alerter = document.getElementById("cp-alert");
+    const [isActive, setIsActive] = useState(false);
 
-        alerter.className = "cp-show";
-
-        setTimeout(function(){ alerter.className = alerter.className.replace('cp-show',""); }, 3000);
-    }
-
-    const get_team_data = () => {
+    const getTeamData = useCallback(() => {
         setIsActive(true);
-        var promise = fetch(api_base_path + '/cyberpatriot-read', {
+        fetch(api_base_path + '/cyberpatriot-read', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -384,186 +606,326 @@ function CyberPatriot() {
             body: JSON.stringify({
                 teams: teams,
             })
-        });
+        })
+            .then((response) => response.json())
+            .then((response) => setTeamData(response['teams']))
+            .then(() => setIsActive(false));
+    }, [teams, setTeamData, setIsActive]);
 
-        promise.then((response) => response.json())
-        .then((response) => setTeamData(response['teams'])).then((response) => setIsActive(false))
+    useEffect(() => {
+        const windows_raw = window.location.href.split('/');
+        const teams_raw = windows_raw[windows_raw.length - 1];
+        if (teams_raw !== "cyberpatriot" && urlLoaded < 10) {
+            const teams_link = teams_raw.split("-");
+            let link_check = true;
+            for (let i = 0; i < teams_link.length; i++) {
+                const current_team = teams_link[i];
+                if (current_team.length !== 4) {
+                    link_check = false;
+                }
+            }
+            if (link_check) {
+                setTeams(teams_link);
+                getTeamData();
+            }
+            setUrlLoaded(urlLoaded + 1);
+        }
+    }, [urlLoaded, getTeamData]);
+
+    const handleChange = (event) => {
+        setNewTeam(event.target.value);
+    };
+
+    const handleDisplayChange = () => {
+        if (currentDisplay === "card") {
+            toggleDisplay("grid");
+        } else {
+            toggleDisplay("card");
+        }
+    };
+
+    const handleGoToTeam = (team_num) => {
+        window.open('http://scoreboard.uscyberpatriot.org/team.php?team=' + team_num, '_blank');
+    };
+
+    const handleLoadData = () => {
+        const windows_raw = window.location.href.split('/');
+        const teams_raw = windows_raw[windows_raw.length - 1];
+        if (teams_raw !== "cyberpatriot") {
+            const teams_link = teams_raw.split("-");
+            let link_check = true;
+            for (let i = 0; i < teams_link.length; i++) {
+                const current_team = teams_link[i];
+                if (current_team.length !== 4) {
+                    link_check = false;
+                }
+            }
+            if (link_check) {
+                setTeams(teams_link);
+                getTeamData();
+            }
+        }
+    };
+
+    const handleAddTeam = () => {
+        if (newTeam.length === 4) {
+            let teams_holder = teams;
+            if (teams_holder.indexOf(newTeam) !== -1) {
+                showAlert('Team already exists');
+            } else {
+                teams_holder.push(newTeam);
+                setTeams(teams_holder);
+                const current_url = window.location.href;
+                if (current_url.split('/')[current_url.split('/').length - 1] === 'cyberpatriot') {
+                    window.history.pushState("", "", "cyberpatriot/" + newTeam);
+                } else if (current_url.split('/')[current_url.split('/').length - 1] === '') {
+                    window.history.pushState("", "", newTeam);
+                } else {
+                    window.history.pushState("", "", current_url.split('/')[current_url.split('/').length - 1] + "-" + newTeam);
+                }
+                getTeamData();
+            }
+        } else {
+            showAlert('Team length must be 4 characters');
+        }
+    };
+
+    const handleDeleteTeam = (team) => {
+        const tnum = team.substring(3);
+        let teams_holder = teams;
+        teams_holder = teams_holder.filter(function (item) {
+            return item !== tnum;
+        });
+        let teams_data = teamData;
+        teams_data = teams_data.filter(function (item) {
+            return item['TeamNumber'] !== team;
+        });
+        setTeamData(teams_data);
+        setTeams(teams_holder);
+        const current_url = window.location.href;
+        if (teams_holder.length > 0) {
+            if (current_url.split('/')[current_url.split('/').length - 1] !== 'cyberpatriot' && current_url.split('/')[current_url.split('/').length - 1] !== '') {
+                window.history.pushState("", "", teams_holder.join("-"));
+            }
+        } else {
+            setTeamData([]);
+            window.history.pushState("", "", "");
+        }
+    };
+
+    const showAlert = (message) => {
+        setAlertMessage(message);
+        setTimeout(() => {
+            setAlertMessage('');
+        }, 3000);
     };
 
 
-    const [cardClass, setCardClass] = useState('cp-card');
-    const toggle_color = () => {
-        document.getElementsByClassName("cp-navbar")[0].classList.toggle('cp-navbar-dark');
-        document.getElementsByClassName("cp-all")[0].classList.toggle('cp-all-dark');
-        document.getElementsByClassName("cp-add-button")[0].classList.toggle('cp-add-button-dark');
-        document.getElementsByClassName("cp-refresh")[0].classList.toggle('cp-refresh-dark');
-        document.getElementsByClassName("cp-refresh-icon")[0].classList.toggle('cp-refresh-icon-dark');
-        if(cardClass == 'cp-card'){
-            setCardClass('cp-card cp-card-dark');
-        }else{
-            setCardClass('cp-card');
-        }
-    }
-
-    const [isActive, setIsActive] = useState(false);
 
     return (
-        <div className="cp-all">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
             <LoadingOverlay
                 active={isActive}
                 text='Gathering Team Data'
-                spinner={<PropagateLoader color="#ffffff"/>}
+                spinner={<PropagateLoader color="#0ea5e9" />}
                 styles={{
-                    wrapper:{},
+                    wrapper: {},
                     overlay: (base) => ({
                         ...base,
-                        background: 'rgba(0, 10, 15, 0.9)'
+                        background: 'rgba(15, 23, 42, 0.9)'
                     }),
                     content: (base) => ({
                         ...base,
                         display: 'flex',
                         flexDirection: 'column',
                         gap: "30px",
-                        alignItems:"center",
-
+                        alignItems: "center",
                     })
-            }}>
-            </LoadingOverlay>
-            <div id="cp-alert">{alertMessage}</div>
-            <div className="cp-navbar">
-                <div>
-                    <div className="cp-navbar-heading"><strong>CyberTracker</strong></div>
-                </div>
-                <div style={{'display': 'flex'}}>
-                    <div style={{'display': 'flex'}} className="cp-add">
-                        <input value={newTeam} placeholder="Team #" onChange={handle_change} className="cp-add-input"/>
-                        <div onClick={add_team} className="cp-add-button"><HiPlus/></div>
-                    </div>
-                    <div className="cp-refresh" onClick={load_data}><MdRefresh className="cp-refresh-icon"/></div>
-                    {/**<div className="cp-color-mode" onClick={toggle_color}><MdLightMode/></div>**/}
-                </div>
-            </div>
+                }}
+            />
 
-            <div className="cp-holder">
-                {teamData.length == 0 &&
-                    <div style={{'display':'flex','flexDirection':'column','alignItems':'center'}}>
-                        <div style={{'fontSize': '30px', 'color': 'black', 'marginBottom': '20px', 'textAlign': 'center'}}>Welcome to the Unofficial CyberPatriot Team CyberTracker</div>
-                        <div style={{'fontSize': '20px', 'color': 'black', 'textAlign': 'center', 'marginBottom': '20px'}}>to begin enter a 4-digit Team Number into the top right (eg. 1767)</div>
-                        <div style={{'fontSize': '20px', 'color': 'black', 'textAlign': 'center', 'marginBottom': '20px', 'maxWidth': '800px'}}>if you want to load multiple teams at once or share your setup just copy and paste the link with teams separated by dashes like <strong>lakshay.io/cyberpatriot/XXXX-YYYY-ZZZZ</strong></div>
-                        <div style={{'fontSize': '20px', 'color': 'black', 'textAlign': 'center'}}><a target="_blank" href="http://scoreboard.uscyberpatriot.org/">Official CyberPatriot Scoreboard</a></div>
-                    </div>
-                }
-                <div style={{'display': 'flex', 'justifyContent': 'end', 'paddingRight': '75px', 'paddingBottom': '50px', 'paddingTop': '10px'}}>
-                {teamData.length > 0 &&
-                    <div className="cp-display-toggle" onClick={change_display}>Toggle Layout</div>
-                }
+            {/* Alert */}
+            {alertMessage && (
+                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg animate-slide-up">
+                    {alertMessage}
                 </div>
-                <div className="cp-grid-main">
-                {currentDisplay == "grid" &&
-                <div className="cp-grid-holder">
-                <div className="cp-grid-header">
-                    <div className="cp-number">Number</div>
-                    <div className="cp-location">Location</div>
-                    <div className="cp-division">Division</div>
-                    <div className="cp-tier">Tier</div>
-                    <div className="cp-score">Score</div>
-                    <div className="cp-rank">Rank</div>
-                    <div className="cp-state-rank">State Rank</div>
-                </div>
-                {teamData.map((team, index) => (
-                    <div style={{'width': '100%'}}>
-                    { (index % 2 == 0) &&
-                    <div className="cp-grid-bar">
-                        <div className="cp-number">{team["TeamNumber"]}</div>
-                        <div className="cp-location">{team["State"]}</div>
-                        <div className="cp-division">{team["Division"]}</div>
-                        <div className="cp-tier">{team["Tier"]}</div>
-                        <div className="cp-score">{team["TotalScore"]}</div>
-                        <div className="cp-rank">{team["Place"]}</div>
-                        <div className="cp-state-rank">{team["StateRank"]}</div>
-                    </div>
-                    }
-                    {index%2 == 1 &&
-                    <div style={{'background-color': '#F2F2F2'}} className="cp-grid-bar">
-                        <div className="cp-number">{team["TeamNumber"]}</div>
-                        <div className="cp-location">{team["State"]}</div>
-                        <div className="cp-division">{team["Division"]}</div>
-                        <div className="cp-tier">{team["Tier"]}</div>
-                        <div className="cp-score">{team["TotalScore"]}</div>
-                        <div className="cp-rank">{team["Place"]}</div>
-                        <div className="cp-state-rank">{team["StateRank"]}</div>
-                    </div>
-                    }
-                    </div>
-                ))}
-                </div>
-                }
-                </div>
-                {currentDisplay == "card" &&
-                <div className="cp-card-holder">
-                {teamData.map((team) => (
-                    <div className={cardClass}>
-                        <div className="cp-team-number" onClick={() => go_to_team(team['TeamNumber'])}><strong>Team {team['TeamNumber']}</strong></div>
-                        {team['InvalidTeam'] == 1
-                        ? <div className="cp-team-number">Invalid Team or Team has not competed</div>
-                        : <div>
-                            <div className="cp-team-classifiers">{team['Division']} | {team['Tier']} | {team['State']}</div>
-                            <hr/>
-                            <div className="cp-score-text">Image Score: {team['ImageScore']}</div>
-                            {team['CiscoScore'] == 0 &&
-                                <div className="cp-score-text">Cisco Score: 0</div>
-                            }
-                            {team['CiscoScore'] != 0 &&
-                                <div className="cp-score-text">Cisco Score: {Math.round((team['CiscoScore'] + Number.EPSILON) * 100) / 100}</div>
-                            }
-                            {team['AdjustedScore'] == 0 &&
-                                <div className="cp-score-text">Administrative Adjustment: 0</div>
-                            }
-                            {team['AdjustedScore'] != 0 &&
-                                <div className="cp-score-text">Administrative Adjustment: {team['AdjustedScore']}</div>
-                            }
-                            <div className="cp-score-text">Total Score: {team['TotalScore']}</div>
-                            <hr/>
-                            <div className="cp-sub-holder">
-                                <div>
-                                    <div className="cp-sub-title"><strong>Rank</strong></div>
-                                    <div>{team['Place']} place</div>
-                                    <div>{team['Percentile']} percentile</div>
-                                </div>
-                                <div>
-                                    <div className="cp-sub-title"><strong>Margin</strong></div>
-                                    <div>{Math.round((team['PointsBelowFirst'] + Number.EPSILON) * 100) / 100} points below 1st place</div>
-                                    <div>{Math.round((team['PointsBelow'] + Number.EPSILON) * 100) / 100} points below {team['Place'] - 1} place</div>
-                                    <div>{Math.round((team['PointsAbove'] + Number.EPSILON) * 100) / 100} points above {team['Place'] + 1} place</div>
-                                </div>
-                                <div>
-                                    <div className="cp-sub-title"><strong>Standing</strong></div>
-                                    <div>{team['StateRank']} of {team['TotalTeamsState']} peer teams in state</div>
-                                    <div>{team['TierRank']} of {team['TotalTeamsTier']} peer teams in tier</div>
-                                    <div>{team['DivisionRank']} of {team['TotalTeamsDivision']} peer teams in division</div>
-                                </div>
+            )}
+
+            {/* Navigation */}
+            <nav className="bg-slate-800/50 backdrop-blur-md border-b border-slate-700 shadow-lg">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
+                        <div className="flex items-center">
+                            <h1 className="text-xl font-bold text-white">CyberTracker</h1>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <div className="flex items-center">
+                                <input
+                                    value={newTeam}
+                                    placeholder="Team #"
+                                    onChange={handleChange}
+                                    className="px-3 py-2 bg-slate-700 border border-slate-600 rounded-l-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <button
+                                    onClick={handleAddTeam}
+                                    className="px-4 py-2 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition-colors duration-200"
+                                >
+                                    <HiPlus className="w-5 h-5" />
+                                </button>
                             </div>
-                            <div className="cp-delete" onClick={() => delete_team(team['TeamNumber'])}>delete team</div>
-                          </div>
-                        }
+                            <button
+                                onClick={handleLoadData}
+                                className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                            >
+                                <MdRefresh className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
-                ))}
                 </div>
-                }
+            </nav>
+
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {teamData.length === 0 ? (
+                    <div className="text-center py-16">
+                        <h2 className="text-3xl font-bold text-white mb-4">Welcome to CyberTracker</h2>
+                        <p className="text-slate-300 text-lg mb-6">
+                            To begin, enter a 4-digit Team Number in the top right (e.g., 1767)
+                        </p>
+                        <p className="text-slate-400 mb-6 max-w-2xl mx-auto">
+                            If you want to load multiple teams at once or share your setup, 
+                            just copy and paste the link with teams separated by dashes like{' '}
+                            <span className="text-blue-400 font-mono">lakshay.io/cyberpatriot/XXXX-YYYY-ZZZZ</span>
+                        </p>
+                        <a
+                            href="http://scoreboard.uscyberpatriot.org/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
+                        >
+                            Official CyberPatriot Scoreboard
+                        </a>
+                    </div>
+                ) : (
+                    <>
+                        <div className="flex justify-end mb-8">
+                            <button
+                                onClick={handleDisplayChange}
+                                className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors duration-200"
+                            >
+                                Toggle Layout
+                            </button>
+                        </div>
+
+                        {currentDisplay === "card" ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {teamData.map((team, index) => (
+                                    <div key={index} className={`${cardClass} rounded-xl p-6 transition-all duration-300 hover:bg-slate-700`}>
+                                        <div 
+                                            className="text-xl font-bold text-white mb-4 cursor-pointer hover:text-blue-400 transition-colors duration-200"
+                                            onClick={() => handleGoToTeam(team['TeamNumber'])}
+                                        >
+                                            Team {team['TeamNumber']}
+                                        </div>
+                                        {team['InvalidTeam'] === 1 ? (
+                                            <div className="text-red-400">Invalid Team or Team has not competed</div>
+                                        ) : (
+                                            <div className="space-y-4">
+                                                <div className="text-slate-300">
+                                                    {team['Division']} | {team['Tier']} | {team['State']}
+                                                </div>
+                                                <div className="border-t border-slate-600 pt-4 space-y-2">
+                                                    <div className="text-slate-300">Image Score: {team['ImageScore']}</div>
+                                                    <div className="text-slate-300">
+                                                        Cisco Score: {team['CiscoScore'] === 0 ? '0' : Math.round((team['CiscoScore'] + Number.EPSILON) * 100) / 100}
+                                                    </div>
+                                                    <div className="text-slate-300">
+                                                        Administrative Adjustment: {team['AdjustedScore'] === 0 ? '0' : team['AdjustedScore']}
+                                                    </div>
+                                                    <div className="text-white font-semibold">Total Score: {team['TotalScore']}</div>
+                                                </div>
+                                                <div className="border-t border-slate-600 pt-4 grid grid-cols-3 gap-4 text-sm">
+                                                    <div>
+                                                        <div className="text-blue-400 font-semibold">Rank</div>
+                                                        <div className="text-slate-300">{team['Place']} place</div>
+                                                        <div className="text-slate-300">{team['Percentile']} percentile</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-blue-400 font-semibold">Margin</div>
+                                                        <div className="text-slate-300">{Math.round((team['PointsBelowFirst'] + Number.EPSILON) * 100) / 100} below 1st</div>
+                                                        <div className="text-slate-300">{Math.round((team['PointsBelow'] + Number.EPSILON) * 100) / 100} below {team['Place'] - 1}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-blue-400 font-semibold">Standing</div>
+                                                        <div className="text-slate-300">{team['StateRank']} of {team['TotalTeamsState']} in state</div>
+                                                        <div className="text-slate-300">{team['TierRank']} of {team['TotalTeamsTier']} in tier</div>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => handleDeleteTeam(team['TeamNumber'])}
+                                                    className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                                                >
+                                                    Delete Team
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="bg-slate-800 rounded-xl overflow-hidden">
+                                <div className="grid grid-cols-7 bg-blue-600 text-white text-center py-4 font-semibold">
+                                    <div>Number</div>
+                                    <div>Location</div>
+                                    <div>Division</div>
+                                    <div>Tier</div>
+                                    <div>Score</div>
+                                    <div>Rank</div>
+                                    <div>State Rank</div>
+                                </div>
+                                {teamData.map((team, index) => (
+                                    <div
+                                        key={index}
+                                        className={`grid grid-cols-7 text-center py-3 ${index % 2 === 0 ? 'bg-slate-700' : 'bg-slate-800'} text-slate-300`}
+                                    >
+                                        <div>{team["TeamNumber"]}</div>
+                                        <div>{team["State"]}</div>
+                                        <div>{team["Division"]}</div>
+                                        <div>{team["Tier"]}</div>
+                                        <div>{team["TotalScore"]}</div>
+                                        <div>{team["Place"]}</div>
+                                        <div>{team["StateRank"]}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {teamData.length > 1 && teamData.length < 20 && (
+                            <div className="mt-16 bg-slate-800 rounded-xl p-8">
+                                <h3 className="text-2xl font-bold text-white mb-8 text-center">Total Score Distribution</h3>
+                                <ResponsiveContainer width="100%" height={400}>
+                                    <BarChart data={teamData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
+                                        <XAxis dataKey="TeamNumber" stroke="#94a3b8" />
+                                        <YAxis stroke="#94a3b8" />
+                                        <Tooltip 
+                                            contentStyle={{
+                                                backgroundColor: '#1e293b',
+                                                border: '1px solid #475569',
+                                                borderRadius: '8px',
+                                                color: '#e2e8f0'
+                                            }}
+                                        />
+                                        <Bar dataKey="TotalScore" fill="#0ea5e9" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
-            {teamData.length > 1 && teamData.length < 20 &&
-            <div className="cp-chart-holder">
-                <div style={{'fontSize': "25px", 'color':'#444444', 'marginBottom': '20px'}}>Total Score Distribution</div>
-                <BarChart width={teamData.length*80} height={400} data={teamData}>
-                    <XAxis dataKey="TeamNumber" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="TotalScore" barSize={30} fill="#8884d8" />
-                </BarChart>
-            </div>
-            }
         </div>
-    )
-}
+    );
+};
 
 export default App;
